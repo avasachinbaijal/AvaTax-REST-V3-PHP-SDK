@@ -4,7 +4,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\ASV
+ * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -25,7 +25,7 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\ASV;
+namespace Avalara\SDK;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -34,16 +34,16 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
-use Avalara\ASV\ApiException;
-use Avalara\ASV\Configuration;
-use Avalara\ASV\HeaderSelector;
-use Avalara\ASV\ObjectSerializer;
+use Avalara\SDK\ApiException;
+use Avalara\SDK\Configuration;
+use Avalara\SDK\HeaderSelector;
+use Avalara\SDK\ObjectSerializer;
 
 /**
  * ApiClient Class Doc Comment
  *
  * @category Class
- * @package  Avalara\ASV
+ * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -149,7 +149,7 @@ class ApiClient
      * @param  GuzzleHttp\Request
      * @param array of http client options
      * @param  \returnType
-     * @throws \Avalara\ASV\ApiException on non-2xx response
+     * @throws \Avalara\SDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return Http response
      */
@@ -166,7 +166,7 @@ class ApiClient
      * @param  GuzzleHttp\Request
      * @param array of http client options
      * @param  \returnType
-     * @throws \Avalara\ASV\ApiException on non-2xx response
+     * @throws \Avalara\SDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return Http response
      */
@@ -183,7 +183,7 @@ class ApiClient
      * @param  GuzzleHttp\Request
      * @param array of http client options
      * @param  \returnType
-     * @throws \Avalara\ASV\ApiException on non-2xx response
+     * @throws \Avalara\SDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return Http response
      */

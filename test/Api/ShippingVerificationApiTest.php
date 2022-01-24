@@ -4,7 +4,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\ASV
+ * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -25,18 +25,18 @@
  * Please update the test case below to test the endpoint.
  */
 
-namespace Avalara\ASV\Test\Api;
+namespace Avalara\SDK\Test\Api;
 
-use \Avalara\ASV\Configuration;
-use \Avalara\ASV\ApiException;
-use \Avalara\ASV\ObjectSerializer;
+use \Avalara\SDK\Configuration;
+use \Avalara\SDK\ApiException;
+use \Avalara\SDK\ObjectSerializer;
 use PHPUnit\Framework\TestCase;
 
 /**
  * ShippingVerificationApiTest Class Doc Comment
  *
  * @category Class
- * @package  Avalara\ASV
+ * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */

@@ -4,7 +4,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\ASV
+ * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -25,14 +25,14 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\ASV;
+namespace Avalara\SDK;
 
 /**
  * Configuration Class Doc Comment
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\ASV
+ * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -421,7 +421,7 @@ class Configuration
      */
     public static function toDebugReport()
     {
-        $report  = 'PHP SDK (Avalara\ASV) Debug Report:' . PHP_EOL;
+        $report  = 'PHP SDK (Avalara\SDK) Debug Report:' . PHP_EOL;
         $report .= '    OS: ' . php_uname() . PHP_EOL;
         $report .= '    PHP Version: ' . PHP_VERSION . PHP_EOL;
         $report .= '    The version of the OpenAPI document: 2.1.0-beta' . PHP_EOL;

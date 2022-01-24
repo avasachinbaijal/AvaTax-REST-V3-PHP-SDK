@@ -4,20 +4,20 @@
 require_once(__DIR__ . '/vendor/autoload.php');
 
 
-$config = Avalara\ASV\Configuration::getDefaultConfiguration()
-              ->setUsername('demo.compliance-verification')
-              ->setPassword('sxgv7KK4HX*B7vY@')
+$config = Avalara\SDK\Configuration::getDefaultConfiguration()
+              ->setUsername('')
+              ->setPassword('')
               ->setEnvironment('sandbox');
 
 
-$client=  new Avalara\ASV\ApiClient($config);
-$apiInstance = new Avalara\ASV\API\AgeVerificationApi($client);
+$client=  new Avalara\SDK\ApiClient($config);
+$apiInstance = new Avalara\SDK\API\AgeVerificationApi($client);
 
-$age_verify_add= new  \Avalara\ASV\Model\AgeVerifyRequestAddress();
+$age_verify_add= new  \Avalara\SDK\Model\AgeVerifyRequestAddress();
 $age_verify_add->setLine1('255 S King St');
 $age_verify_add->setPostalCode('98109');
 
-$age_verify_request = new \Avalara\ASV\Model\AgeVerifyRequest(); 
+$age_verify_request = new \Avalara\SDK\Model\AgeVerifyRequest(); 
 
 $age_verify_request->setFirstName('Test');
 $age_verify_request->setLastName('Person');
@@ -27,7 +27,7 @@ $age_verify_request->setAddress($age_verify_add);
 $result=$apiInstance->verifyAge($age_verify_request);
 print_r($result);
 
-$apiInstance2 = new Avalara\ASV\API\ShippingVerificationApi($client);
+$apiInstance2 = new Avalara\SDK\API\ShippingVerificationApi($client);
 try {
     $apiInstance2->deregisterShipment("DEFAULT", "575f7201-ae11-483a-bc4e-0b3f948e4397", null);
     print_r('success');

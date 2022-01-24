@@ -1,4 +1,4 @@
-# Avalara\ASV\AgeVerificationApi
+# Avalara\SDK\AgeVerificationApi
 
 All URIs are relative to http://localhost.
 
@@ -10,7 +10,7 @@ Method | HTTP request | Description
 ## `verifyAge()`
 
 ```php
-verifyAge($age_verify_request, $simulated_failure_code): \Avalara\ASV\Model\AgeVerifyResult
+verifyAge($age_verify_request, $simulated_failure_code): \Avalara\SDK\Model\AgeVerifyResult
 ```
 
 Determines whether an individual meets or exceeds the minimum legal drinking age.
@@ -25,24 +25,24 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure HTTP basic authorization: BasicAuth
-$config = Avalara\ASV\Configuration::getDefaultConfiguration()
+$config = Avalara\SDK\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
               ->setPassword('YOUR_PASSWORD');
 
 // Configure API key authorization: Bearer
-$config = Avalara\ASV\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+$config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Avalara\ASV\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+// $config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
 
 
-$apiInstance = new Avalara\ASV\Api\AgeVerificationApi(
+$apiInstance = new Avalara\SDK\Api\AgeVerificationApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
     $config
 );
-$age_verify_request = new \Avalara\ASV\Model\AgeVerifyRequest(); // \Avalara\ASV\Model\AgeVerifyRequest | Information about the individual whose age is being verified.
-$simulated_failure_code = new \Avalara\ASV\Model\\Avalara\ASV\Model\AgeVerifyFailureCode(); // \Avalara\ASV\Model\AgeVerifyFailureCode | (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes.
+$age_verify_request = new \Avalara\SDK\Model\AgeVerifyRequest(); // \Avalara\SDK\Model\AgeVerifyRequest | Information about the individual whose age is being verified.
+$simulated_failure_code = new \Avalara\SDK\Model\\Avalara\SDK\Model\AgeVerifyFailureCode(); // \Avalara\SDK\Model\AgeVerifyFailureCode | (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes.
 
 try {
     $result = $apiInstance->verifyAge($age_verify_request, $simulated_failure_code);
@@ -56,12 +56,12 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **age_verify_request** | [**\Avalara\ASV\Model\AgeVerifyRequest**](../Model/AgeVerifyRequest.md)| Information about the individual whose age is being verified. |
- **simulated_failure_code** | [**\Avalara\ASV\Model\AgeVerifyFailureCode**](../Model/.md)| (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. | [optional]
+ **age_verify_request** | [**\Avalara\SDK\Model\AgeVerifyRequest**](../Model/AgeVerifyRequest.md)| Information about the individual whose age is being verified. |
+ **simulated_failure_code** | [**\Avalara\SDK\Model\AgeVerifyFailureCode**](../Model/.md)| (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. | [optional]
 
 ### Return type
 
-[**\Avalara\ASV\Model\AgeVerifyResult**](../Model/AgeVerifyResult.md)
+[**\Avalara\SDK\Model\AgeVerifyResult**](../Model/AgeVerifyResult.md)
 
 ### Authorization
 
