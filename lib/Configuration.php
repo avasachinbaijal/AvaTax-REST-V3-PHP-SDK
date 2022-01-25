@@ -48,55 +48,72 @@ class Configuration
      *
      * @var string[]
      */
-    protected $apiKeys = [];
+    public $apiKeys = [];
 
     /**
      * Associate array to store API prefix (e.g. Bearer)
      *
      * @var string[]
      */
-    protected $apiKeyPrefixes = [];
+    public $apiKeyPrefixes = [];
 
     /**
      * Access token for OAuth/Bearer authentication
      *
      * @var string
      */
-    protected $accessToken = '';
+    public $accessToken = '';
+
+    /**
+     * Gets the application name. 
+     *
+     * @var string
+     */
+    public $appName = '';
+
+    /**
+     * Gets the application version. 
+     *
+     * @var string
+     */
+    public $appVersion = '';
+
+    /**
+     * Gets the machine name. 
+     *
+     * @var string
+     */
+    public $machineName = '';
+
 
     /**
      * Username for HTTP basic authentication
      *
      * @var string
      */
-    protected $username = '';
+    public $username = '';
 
     /**
      * Password for HTTP basic authentication
      *
      * @var string
      */
-    protected $password = '';
+    public $password = '';
 
+    /**
+     * The environment
+     *
+     * @var string
+     */
+    public $environment = '';
+  
     /**
      * The host
      *
      * @var string
      */
     protected $host = '';
-    /**
-     * The environment
-     *
-     * @var string
-     */
-    protected $environment = '';
-    /**
-     * User agent of the HTTP request, set to "OpenAPI-Generator/{version}/PHP" by default
-     *
-     * @var string
-     */
-    protected $userAgent = 'OpenAPI-Generator/22.1.0/PHP';
-
+    
     /**
      * Debug switch (default set to false)
      *
@@ -213,6 +230,74 @@ class Configuration
     }
 
     /**
+     * Sets the appName
+     *
+     * @param string $appname
+     *
+     * @return $this
+     */
+    public function setAppName($appName)
+    {
+        $this->appName = $appName;
+        return $this;
+    }
+
+    /**
+     * Gets the application name.
+     *
+     * @return string appname 
+     */
+    public function getAppName()
+    {
+        return $this->appName;
+    }
+
+    /**
+     * Sets the appVersion
+     *
+     * @param string $appVersion
+     *
+     * @return $this
+     */
+    public function setAppVersion($appVersion)
+    {
+        $this->appVersion = $appVersion;
+        return $this;
+    }
+
+    /**
+     * Gets the application version.
+     *
+     * @return string appVersion
+     */
+    public function getAppVersion()
+    {
+        return $this->appVersion;
+    }
+    /**
+     * Sets the machineName
+     *
+     * @param string $machineName
+     *
+     * @return $this
+     */
+    public function setMachineName($machineName)
+    {
+        $this->machineName = $machineName;
+        return $this;
+    }
+
+    /**
+     * Gets the machine name.
+     *
+     * @return string machineName 
+     */
+    public function getMachineName()
+    {
+        return $this->machineName;
+    }
+
+    /**
      * Sets the username for HTTP basic authentication
      *
      * @param string $username Username for HTTP basic authentication
@@ -279,34 +364,6 @@ class Configuration
     public function getHost()
     {
         return $this->host;
-    }
-
-    /**
-     * Sets the user agent of the api client
-     *
-     * @param string $userAgent the user agent of the api client
-     *
-     * @throws \InvalidArgumentException
-     * @return $this
-     */
-    public function setUserAgent($userAgent)
-    {
-        if (!is_string($userAgent)) {
-            throw new \InvalidArgumentException('User-agent must be a string.');
-        }
-
-        $this->userAgent = $userAgent;
-        return $this;
-    }
-
-    /**
-     * Gets the user agent of the api client
-     *
-     * @return string user agent
-     */
-    public function getUserAgent()
-    {
-        return $this->userAgent;
     }
 
     /**

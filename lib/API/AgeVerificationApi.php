@@ -347,6 +347,9 @@ class AgeVerificationApi
                 ['application/json']
             );
         }
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+
+        $headers['X-Avalara-Client']=$clientId;
 
         // for model (json/xml)
         if (isset($age_verify_request)) {
@@ -390,10 +393,7 @@ class AgeVerificationApi
         }
 
         $defaultHeaders = [];
-        if ($this->client->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->client->config->getUserAgent();
-        }
-
+        
         $headers = array_merge(
             $defaultHeaders,
             $headerParams,

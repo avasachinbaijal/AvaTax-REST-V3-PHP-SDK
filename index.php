@@ -3,12 +3,21 @@
 // Include the AvaTaxClient library
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()
+$config = new Avalara\SDK\Configuration();
+/*$config = Avalara\SDK\Configuration::getDefaultConfiguration()
               ->setUsername('')
               ->setPassword('')
+              ->setAppName('sandbox')
+              ->setAppVersion('11')
+              ->setMachineName('local')
               ->setEnvironment('sandbox');
-
+*/
+$config->username='';
+$config->password='';
+$config->appName="testApplication";
+$config->appVersion='2.1.2';
+$config->machineName='localhost';
+$config->environment='sandbox';    
 
 $client=  new Avalara\SDK\ApiClient($config);
 $apiInstance = new Avalara\SDK\API\AgeVerificationApi($client);

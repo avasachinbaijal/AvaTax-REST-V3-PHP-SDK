@@ -337,7 +337,10 @@ class ShippingVerificationApi
                 []
             );
         }
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
 
+        $headers['X-Avalara-Client']=$clientId;
+        echo $headers['X-Avalara-Client'];
         // for model (json/xml)
         if (count($formParams) > 0) {
             if ($multipart) {
@@ -374,10 +377,7 @@ class ShippingVerificationApi
         }
 
         $defaultHeaders = [];
-        if ($this->client->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->client->config->getUserAgent();
-        }
-
+        
         $headers = array_merge(
             $defaultHeaders,
             $headerParams,
@@ -615,6 +615,9 @@ class ShippingVerificationApi
                 []
             );
         }
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+
+        $headers['X-Avalara-Client']=$clientId;
 
         // for model (json/xml)
         if (count($formParams) > 0) {
@@ -652,10 +655,7 @@ class ShippingVerificationApi
         }
 
         $defaultHeaders = [];
-        if ($this->client->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->client->config->getUserAgent();
-        }
-
+        
         $headers = array_merge(
             $defaultHeaders,
             $headerParams,
@@ -950,6 +950,9 @@ class ShippingVerificationApi
                 []
             );
         }
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+
+        $headers['X-Avalara-Client']=$clientId;
 
         // for model (json/xml)
         if (count($formParams) > 0) {
@@ -987,10 +990,7 @@ class ShippingVerificationApi
         }
 
         $defaultHeaders = [];
-        if ($this->client->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->client->config->getUserAgent();
-        }
-
+        
         $headers = array_merge(
             $defaultHeaders,
             $headerParams,
@@ -1285,6 +1285,9 @@ class ShippingVerificationApi
                 []
             );
         }
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+
+        $headers['X-Avalara-Client']=$clientId;
 
         // for model (json/xml)
         if (count($formParams) > 0) {
@@ -1322,10 +1325,7 @@ class ShippingVerificationApi
         }
 
         $defaultHeaders = [];
-        if ($this->client->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->client->config->getUserAgent();
-        }
-
+        
         $headers = array_merge(
             $defaultHeaders,
             $headerParams,
