@@ -5,7 +5,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\SDK
+ * @package  AvalaraSDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -18,17 +18,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * Avalara Shipping Verification only
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    AvalaraSDK\API
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.1.6
+ * @version    2.3.0
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,17 +39,17 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace AvalaraSDK\Model;
 
 use \ArrayAccess;
-use \Avalara\SDK\ObjectSerializer;
+use \AvalaraSDK\ObjectSerializer;
 
 /**
  * AgeVerifyRequest Class Doc Comment
  *
  * @category Class
  * @description The Request for the /ageVerification/verify endpoint. Describes information about the person whose age is being verified.
- * @package  Avalara\SDK
+ * @package  AvalaraSDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<TKey, TValue>
@@ -75,7 +75,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $openAPITypes = [
         'first_name' => 'string',
         'last_name' => 'string',
-        'address' => '\Avalara\SDK\Model\AgeVerifyRequestAddress',
+        'address' => '\AvalaraSDK\Model\AgeVerifyRequestAddress',
         'dob' => 'string'
     ];
 
@@ -288,7 +288,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets address
      *
-     * @return \Avalara\SDK\Model\AgeVerifyRequestAddress|null
+     * @return \AvalaraSDK\Model\AgeVerifyRequestAddress|null
      */
     public function getAddress()
     {
@@ -298,7 +298,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets address
      *
-     * @param \Avalara\SDK\Model\AgeVerifyRequestAddress|null $address address
+     * @param \AvalaraSDK\Model\AgeVerifyRequestAddress|null $address address
      *
      * @return self
      */
