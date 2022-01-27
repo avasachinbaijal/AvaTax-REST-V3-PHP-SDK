@@ -5,7 +5,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\SDK
+ * @package  AvalaraSDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -18,17 +18,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * Avalara Shipping Verification only
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    AvalaraSDK\API
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.1.6
+ * @version    2.3.0
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,17 +39,17 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace AvalaraSDK\Model;
 
 use \ArrayAccess;
-use \Avalara\SDK\ObjectSerializer;
+use \AvalaraSDK\ObjectSerializer;
 
 /**
  * ErrorDetails Class Doc Comment
  *
  * @category Class
  * @description Message Object
- * @package  Avalara\SDK
+ * @package  AvalaraSDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<TKey, TValue>
@@ -73,7 +73,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
       * @var string[]
       */
     protected static $openAPITypes = [
-        'error' => '\Avalara\SDK\Model\ErrorDetailsError'
+        'error' => '\AvalaraSDK\Model\ErrorDetailsError'
     ];
 
     /**
@@ -222,7 +222,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets error
      *
-     * @return \Avalara\SDK\Model\ErrorDetailsError|null
+     * @return \AvalaraSDK\Model\ErrorDetailsError|null
      */
     public function getError()
     {
@@ -232,7 +232,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets error
      *
-     * @param \Avalara\SDK\Model\ErrorDetailsError|null $error error
+     * @param \AvalaraSDK\Model\ErrorDetailsError|null $error error
      *
      * @return self
      */
