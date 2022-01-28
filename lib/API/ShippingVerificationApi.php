@@ -14,24 +14,24 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * Avalara Shipping Verification only
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    AvalaraSDK\API
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.1.6
+ * @version    2.3.3
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
 
 
 
-namespace Avalara\SDK\API;
+namespace AvalaraSDK\API;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -40,11 +40,11 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
-use Avalara\SDK\ApiClient;
-use Avalara\SDK\ApiException;
-use Avalara\SDK\Configuration;
-use Avalara\SDK\HeaderSelector;
-use Avalara\SDK\ObjectSerializer;
+use AvalaraSDK\ApiClient;
+use AvalaraSDK\ApiException;
+use AvalaraSDK\Configuration;
+use AvalaraSDK\HeaderSelector;
+use AvalaraSDK\ObjectSerializer;
 
 class ShippingVerificationApi
 {
@@ -79,7 +79,7 @@ class ShippingVerificationApi
     private function setConfiguration($client): void
     {
         $this->verifyAPIClient($client);
-        $client->setSdkVersion("2.1.6");
+        $client->setSdkVersion("2.3.3");
         $this->headerSelector = new HeaderSelector(); 
         $this->client = $client;
     }
@@ -124,7 +124,7 @@ class ShippingVerificationApi
      * @param  string $transaction_code The transaction code to retrieve (required)
      * @param  string $document_type (Optional): The document type of the transaction to operate on. If omitted, defaults to \&quot;SalesInvoice\&quot; (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \AvalaraSDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -142,7 +142,7 @@ class ShippingVerificationApi
      * @param  string $transaction_code The transaction code to retrieve (required)
      * @param  string $document_type (Optional): The document type of the transaction to operate on. If omitted, defaults to \&quot;SalesInvoice\&quot; (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \AvalaraSDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -192,7 +192,7 @@ class ShippingVerificationApi
                 case 409:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Avalara\SDK\Model\ErrorDetails',
+                        '\AvalaraSDK\Model\ErrorDetails',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -337,10 +337,10 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.3.3; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
-        echo $headers['X-Avalara-Client'];
+
         // for model (json/xml)
         if (count($formParams) > 0) {
             if ($multipart) {
@@ -402,7 +402,7 @@ class ShippingVerificationApi
      * @param  string $transaction_code The transaction code to retrieve (required)
      * @param  string $document_type (Optional): The document type of the transaction to operate on. If omitted, defaults to \&quot;SalesInvoice\&quot; (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \AvalaraSDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return void
      */
@@ -420,7 +420,7 @@ class ShippingVerificationApi
      * @param  string $transaction_code The transaction code to retrieve (required)
      * @param  string $document_type (Optional): The document type of the transaction to operate on. If omitted, defaults to \&quot;SalesInvoice\&quot; (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \AvalaraSDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
@@ -470,7 +470,7 @@ class ShippingVerificationApi
                 case 409:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Avalara\SDK\Model\ErrorDetails',
+                        '\AvalaraSDK\Model\ErrorDetails',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -615,7 +615,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.3.3; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -680,9 +680,9 @@ class ShippingVerificationApi
      * @param  string $transaction_code The transaction code to retrieve (required)
      * @param  string $document_type (Optional): The document type of the transaction to operate on. If omitted, defaults to \&quot;SalesInvoice\&quot; (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \AvalaraSDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Avalara\SDK\Model\ShippingVerifyResult|\Avalara\SDK\Model\ErrorDetails
+     * @return \AvalaraSDK\Model\ShippingVerifyResult|\AvalaraSDK\Model\ErrorDetails
      */
     public function registerShipmentIfCompliant($company_code, $transaction_code, $document_type = null)
     {
@@ -699,9 +699,9 @@ class ShippingVerificationApi
      * @param  string $transaction_code The transaction code to retrieve (required)
      * @param  string $document_type (Optional): The document type of the transaction to operate on. If omitted, defaults to \&quot;SalesInvoice\&quot; (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \AvalaraSDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Avalara\SDK\Model\ShippingVerifyResult|\Avalara\SDK\Model\ErrorDetails, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \AvalaraSDK\Model\ShippingVerifyResult|\AvalaraSDK\Model\ErrorDetails, HTTP status code, HTTP response headers (array of strings)
      */
     public function registerShipmentIfCompliantWithHttpInfo($company_code, $transaction_code, $document_type = null)
     {
@@ -744,32 +744,32 @@ class ShippingVerificationApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Avalara\SDK\Model\ShippingVerifyResult' === '\SplFileObject') {
+                    if ('\AvalaraSDK\Model\ShippingVerifyResult' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Avalara\SDK\Model\ShippingVerifyResult', []),
+                        ObjectSerializer::deserialize($content, '\AvalaraSDK\Model\ShippingVerifyResult', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 409:
-                    if ('\Avalara\SDK\Model\ErrorDetails' === '\SplFileObject') {
+                    if ('\AvalaraSDK\Model\ErrorDetails' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Avalara\SDK\Model\ErrorDetails', []),
+                        ObjectSerializer::deserialize($content, '\AvalaraSDK\Model\ErrorDetails', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = '\Avalara\SDK\Model\ShippingVerifyResult';
+            $returnType = '\AvalaraSDK\Model\ShippingVerifyResult';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -787,7 +787,7 @@ class ShippingVerificationApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Avalara\SDK\Model\ShippingVerifyResult',
+                        '\AvalaraSDK\Model\ShippingVerifyResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -795,7 +795,7 @@ class ShippingVerificationApi
                 case 409:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Avalara\SDK\Model\ErrorDetails',
+                        '\AvalaraSDK\Model\ErrorDetails',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -841,7 +841,7 @@ class ShippingVerificationApi
      */
     public function registerShipmentIfCompliantAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null)
     {
-        $returnType = '\Avalara\SDK\Model\ShippingVerifyResult';
+        $returnType = '\AvalaraSDK\Model\ShippingVerifyResult';
         $request = $this->registerShipmentIfCompliantRequest($company_code, $transaction_code, $document_type);
 
         return $this->client
@@ -950,7 +950,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.3.3; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -1015,9 +1015,9 @@ class ShippingVerificationApi
      * @param  string $transaction_code The transaction code to retrieve (required)
      * @param  string $document_type (Optional): The document type of the transaction to operate on. If omitted, defaults to \&quot;SalesInvoice\&quot; (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \AvalaraSDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Avalara\SDK\Model\ShippingVerifyResult|\Avalara\SDK\Model\ErrorDetails
+     * @return \AvalaraSDK\Model\ShippingVerifyResult|\AvalaraSDK\Model\ErrorDetails
      */
     public function verifyShipment($company_code, $transaction_code, $document_type = null)
     {
@@ -1034,9 +1034,9 @@ class ShippingVerificationApi
      * @param  string $transaction_code The transaction code to retrieve (required)
      * @param  string $document_type (Optional): The document type of the transaction to operate on. If omitted, defaults to \&quot;SalesInvoice\&quot; (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \AvalaraSDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Avalara\SDK\Model\ShippingVerifyResult|\Avalara\SDK\Model\ErrorDetails, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \AvalaraSDK\Model\ShippingVerifyResult|\AvalaraSDK\Model\ErrorDetails, HTTP status code, HTTP response headers (array of strings)
      */
     public function verifyShipmentWithHttpInfo($company_code, $transaction_code, $document_type = null)
     {
@@ -1079,32 +1079,32 @@ class ShippingVerificationApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Avalara\SDK\Model\ShippingVerifyResult' === '\SplFileObject') {
+                    if ('\AvalaraSDK\Model\ShippingVerifyResult' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Avalara\SDK\Model\ShippingVerifyResult', []),
+                        ObjectSerializer::deserialize($content, '\AvalaraSDK\Model\ShippingVerifyResult', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 409:
-                    if ('\Avalara\SDK\Model\ErrorDetails' === '\SplFileObject') {
+                    if ('\AvalaraSDK\Model\ErrorDetails' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Avalara\SDK\Model\ErrorDetails', []),
+                        ObjectSerializer::deserialize($content, '\AvalaraSDK\Model\ErrorDetails', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = '\Avalara\SDK\Model\ShippingVerifyResult';
+            $returnType = '\AvalaraSDK\Model\ShippingVerifyResult';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1122,7 +1122,7 @@ class ShippingVerificationApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Avalara\SDK\Model\ShippingVerifyResult',
+                        '\AvalaraSDK\Model\ShippingVerifyResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1130,7 +1130,7 @@ class ShippingVerificationApi
                 case 409:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Avalara\SDK\Model\ErrorDetails',
+                        '\AvalaraSDK\Model\ErrorDetails',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1176,7 +1176,7 @@ class ShippingVerificationApi
      */
     public function verifyShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null)
     {
-        $returnType = '\Avalara\SDK\Model\ShippingVerifyResult';
+        $returnType = '\AvalaraSDK\Model\ShippingVerifyResult';
         $request = $this->verifyShipmentRequest($company_code, $transaction_code, $document_type);
 
         return $this->client
@@ -1285,7 +1285,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.3.3; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
