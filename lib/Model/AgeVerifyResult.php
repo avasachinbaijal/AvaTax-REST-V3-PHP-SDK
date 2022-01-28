@@ -5,7 +5,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\SDK
+ * @package  AvalaraSDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -18,17 +18,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * Avalara Shipping Verification only
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    AvalaraSDK\API
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.1.6
+ * @version    2.3.9
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,17 +39,17 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace AvalaraSDK\Model;
 
 use \ArrayAccess;
-use \Avalara\SDK\ObjectSerializer;
+use \AvalaraSDK\ObjectSerializer;
 
 /**
  * AgeVerifyResult Class Doc Comment
  *
  * @category Class
  * @description The Result of a call to the /ageVerification/verify endpoint.
- * @package  Avalara\SDK
+ * @package  AvalaraSDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<TKey, TValue>
@@ -74,7 +74,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPITypes = [
         'is_of_age' => 'bool',
-        'failure_codes' => '\Avalara\SDK\Model\AgeVerifyResult[]'
+        'failure_codes' => '\AvalaraSDK\Model\AgeVerifyResult[]'
     ];
 
     /**
@@ -252,7 +252,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets failure_codes
      *
-     * @return \Avalara\SDK\Model\AgeVerifyResult[]|null
+     * @return \AvalaraSDK\Model\AgeVerifyResult[]|null
      */
     public function getFailureCodes()
     {
@@ -262,7 +262,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets failure_codes
      *
-     * @param \Avalara\SDK\Model\AgeVerifyResult[]|null $failure_codes A list of failure codes describing why a *false* age determination was made.
+     * @param \AvalaraSDK\Model\AgeVerifyResult[]|null $failure_codes A list of failure codes describing why a *false* age determination was made.
      *
      * @return self
      */
