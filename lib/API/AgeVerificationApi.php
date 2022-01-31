@@ -14,7 +14,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * Avalara Shipping Verification only
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
@@ -24,7 +24,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.1.6
+ * @version    2.4.5.2
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -79,7 +79,7 @@ class AgeVerificationApi
     private function setConfiguration($client): void
     {
         $this->verifyAPIClient($client);
-        $client->setSdkVersion("2.1.6");
+        $client->setSdkVersion("2.4.5.2");
         $this->headerSelector = new HeaderSelector(); 
         $this->client = $client;
     }
@@ -347,7 +347,7 @@ class AgeVerificationApi
                 ['application/json']
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.1.6; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.5.2; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
