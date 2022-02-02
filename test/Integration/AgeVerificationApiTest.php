@@ -15,9 +15,9 @@ class AgeVerificationApiIntegrationTest extends TestCase
     public function testVerifyShipment()
     {
         $config = new \Avalara\SDK\Configuration();
-        $config->username='demo.compliance-verification';
-        $config->password='sxgv7KK4HX*B7vY@';
-        $config->appName="testApplication";
+        $config->username=getenv('USERNAME');
+        $config->password=getenv('PASSWORD');
+        $config->appName='testApplication';
         $config->appVersion='2.1.2';
         $config->machineName='localhost';
         $config->environment='sandbox';    
