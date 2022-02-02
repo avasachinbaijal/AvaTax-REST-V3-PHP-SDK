@@ -35,4 +35,4 @@ jobs:
       run: composer install --prefer-dist --no-progress
   
     - name: Run test suite
-      run: composer run-script test
+      run: USERNAME="${{ secrets.API_USERNAME }}" PASSWORD="${{ secrets.API_PASSWORD }} composer run-script test
