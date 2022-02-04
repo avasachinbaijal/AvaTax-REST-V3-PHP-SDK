@@ -5,7 +5,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\SDK
+ * @package  Avalara\\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -23,12 +23,12 @@
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\\SDK\API
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.7.5
+ * @version    
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,17 +39,17 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\\SDK\Model;
 
 use \ArrayAccess;
-use \Avalara\SDK\ObjectSerializer;
+use \Avalara\\SDK\ObjectSerializer;
 
 /**
  * ErrorDetailsError Class Doc Comment
  *
  * @category Class
  * @description An object holding details about the error.
- * @package  Avalara\SDK
+ * @package  Avalara\\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<TKey, TValue>
@@ -75,7 +75,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
     protected static $openAPITypes = [
         'code' => 'string',
         'message' => 'string',
-        'details' => '\Avalara\SDK\Model\ErrorDetailsErrorDetails'
+        'details' => '\Avalara\\SDK\Model\ErrorDetailsErrorDetails'
     ];
 
     /**
@@ -322,7 +322,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Gets details
      *
-     * @return \Avalara\SDK\Model\ErrorDetailsErrorDetails|null
+     * @return \Avalara\\SDK\Model\ErrorDetailsErrorDetails|null
      */
     public function getDetails()
     {
@@ -332,7 +332,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
     /**
      * Sets details
      *
-     * @param \Avalara\SDK\Model\ErrorDetailsErrorDetails|null $details details
+     * @param \Avalara\\SDK\Model\ErrorDetailsErrorDetails|null $details details
      *
      * @return self
      */
