@@ -19,19 +19,19 @@
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\\SDK\API
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.7.5
+ * @version    
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
 
 
 
-namespace Avalara\SDK\API;
+namespace Avalara\\SDK\API;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\ClientInterface;
@@ -40,11 +40,11 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Psr7\MultipartStream;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\RequestOptions;
-use Avalara\SDK\ApiClient;
-use Avalara\SDK\ApiException;
-use Avalara\SDK\Configuration;
-use Avalara\SDK\HeaderSelector;
-use Avalara\SDK\ObjectSerializer;
+use Avalara\\SDK\ApiClient;
+use Avalara\\SDK\ApiException;
+use Avalara\\SDK\Configuration;
+use Avalara\\SDK\HeaderSelector;
+use Avalara\\SDK\ObjectSerializer;
 
 class AgeVerificationApi
 {
@@ -79,7 +79,7 @@ class AgeVerificationApi
     private function setConfiguration($client): void
     {
         $this->verifyAPIClient($client);
-        $client->setSdkVersion("2.4.7.5");
+        $client->setSdkVersion("");
         $this->headerSelector = new HeaderSelector(); 
         $this->client = $client;
     }
@@ -120,12 +120,12 @@ class AgeVerificationApi
      *
      * Determines whether an individual meets or exceeds the minimum legal drinking age.
      *
-     * @param  \Avalara\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
-     * @param  \Avalara\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
+     * @param  \Avalara\\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
+     * @param  \Avalara\\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \Avalara\\SDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Avalara\SDK\Model\AgeVerifyResult
+     * @return \Avalara\\SDK\Model\AgeVerifyResult
      */
     public function verifyAge($age_verify_request, $simulated_failure_code = null)
     {
@@ -138,12 +138,12 @@ class AgeVerificationApi
      *
      * Determines whether an individual meets or exceeds the minimum legal drinking age.
      *
-     * @param  \Avalara\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
-     * @param  \Avalara\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
+     * @param  \Avalara\\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
+     * @param  \Avalara\\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
      *
-     * @throws \Avalara\SDK\ApiException on non-2xx response
+     * @throws \Avalara\\SDK\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Avalara\SDK\Model\AgeVerifyResult, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Avalara\\SDK\Model\AgeVerifyResult, HTTP status code, HTTP response headers (array of strings)
      */
     public function verifyAgeWithHttpInfo($age_verify_request, $simulated_failure_code = null)
     {
@@ -186,20 +186,20 @@ class AgeVerificationApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Avalara\SDK\Model\AgeVerifyResult' === '\SplFileObject') {
+                    if ('\Avalara\\SDK\Model\AgeVerifyResult' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Avalara\SDK\Model\AgeVerifyResult', []),
+                        ObjectSerializer::deserialize($content, '\Avalara\\SDK\Model\AgeVerifyResult', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = '\Avalara\SDK\Model\AgeVerifyResult';
+            $returnType = '\Avalara\\SDK\Model\AgeVerifyResult';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -217,7 +217,7 @@ class AgeVerificationApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Avalara\SDK\Model\AgeVerifyResult',
+                        '\Avalara\\SDK\Model\AgeVerifyResult',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -232,8 +232,8 @@ class AgeVerificationApi
      *
      * Determines whether an individual meets or exceeds the minimum legal drinking age.
      *
-     * @param  \Avalara\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
-     * @param  \Avalara\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
+     * @param  \Avalara\\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
+     * @param  \Avalara\\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -253,15 +253,15 @@ class AgeVerificationApi
      *
      * Determines whether an individual meets or exceeds the minimum legal drinking age.
      *
-     * @param  \Avalara\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
-     * @param  \Avalara\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
+     * @param  \Avalara\\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
+     * @param  \Avalara\\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
     public function verifyAgeAsyncWithHttpInfo($age_verify_request, $simulated_failure_code = null)
     {
-        $returnType = '\Avalara\SDK\Model\AgeVerifyResult';
+        $returnType = '\Avalara\\SDK\Model\AgeVerifyResult';
         $request = $this->verifyAgeRequest($age_verify_request, $simulated_failure_code);
 
         return $this->client
@@ -300,8 +300,8 @@ class AgeVerificationApi
     /**
      * Create request for operation 'verifyAge'
      *
-     * @param  \Avalara\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
-     * @param  \Avalara\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
+     * @param  \Avalara\\SDK\Model\AgeVerifyRequest $age_verify_request Information about the individual whose age is being verified. (required)
+     * @param  \Avalara\\SDK\Model\AgeVerifyFailureCode $simulated_failure_code (Optional) The failure code included in the simulated response of the endpoint. Note that this endpoint is only available in Sandbox for testing purposes. (optional)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -347,7 +347,7 @@ class AgeVerificationApi
                 ['application/json']
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.7.5; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; ; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
