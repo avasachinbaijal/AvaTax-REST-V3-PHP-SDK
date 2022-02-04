@@ -1,4 +1,4 @@
-# Avalara\SDK\ShippingVerificationApi
+# AvalaraSDK\ShippingVerificationApi
 
 All URIs are relative to http://localhost.
 
@@ -26,17 +26,17 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure HTTP basic authorization: BasicAuth
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()
+$config = AvalaraSDK\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
               ->setPassword('YOUR_PASSWORD');
 
 // Configure API key authorization: Bearer
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+$config = AvalaraSDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+// $config = AvalaraSDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
 
 
-$apiInstance = new Avalara\SDK\Api\ShippingVerificationApi(
+$apiInstance = new AvalaraSDK\Api\ShippingVerificationApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
@@ -94,17 +94,17 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure HTTP basic authorization: BasicAuth
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()
+$config = AvalaraSDK\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
               ->setPassword('YOUR_PASSWORD');
 
 // Configure API key authorization: Bearer
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+$config = AvalaraSDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+// $config = AvalaraSDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
 
 
-$apiInstance = new Avalara\SDK\Api\ShippingVerificationApi(
+$apiInstance = new AvalaraSDK\Api\ShippingVerificationApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
@@ -149,7 +149,7 @@ void (empty response body)
 ## `registerShipmentIfCompliant()`
 
 ```php
-registerShipmentIfCompliant($company_code, $transaction_code, $document_type): \Avalara\SDK\Model\ShippingVerifyResult
+registerShipmentIfCompliant($company_code, $transaction_code, $document_type): \AvalaraSDK\Model\ShippingVerifyResult
 ```
 
 Evaluates a transaction against a set of direct-to-consumer shipping regulations and, if compliant, registers the transaction so that it may be included when evaluating regulations that span multiple transactions.
@@ -162,17 +162,17 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure HTTP basic authorization: BasicAuth
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()
+$config = AvalaraSDK\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
               ->setPassword('YOUR_PASSWORD');
 
 // Configure API key authorization: Bearer
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+$config = AvalaraSDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+// $config = AvalaraSDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
 
 
-$apiInstance = new Avalara\SDK\Api\ShippingVerificationApi(
+$apiInstance = new AvalaraSDK\Api\ShippingVerificationApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
@@ -200,7 +200,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**\Avalara\SDK\Model\ShippingVerifyResult**](../Model/ShippingVerifyResult.md)
+[**\AvalaraSDK\Model\ShippingVerifyResult**](../Model/ShippingVerifyResult.md)
 
 ### Authorization
 
@@ -218,7 +218,7 @@ Name | Type | Description  | Notes
 ## `verifyShipment()`
 
 ```php
-verifyShipment($company_code, $transaction_code, $document_type): \Avalara\SDK\Model\ShippingVerifyResult
+verifyShipment($company_code, $transaction_code, $document_type): \AvalaraSDK\Model\ShippingVerifyResult
 ```
 
 Evaluates a transaction against a set of direct-to-consumer shipping regulations.
@@ -233,17 +233,17 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 // Configure HTTP basic authorization: BasicAuth
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()
+$config = AvalaraSDK\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
               ->setPassword('YOUR_PASSWORD');
 
 // Configure API key authorization: Bearer
-$config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
+$config = AvalaraSDK\Configuration::getDefaultConfiguration()->setApiKey('Authorization', 'YOUR_API_KEY');
 // Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Avalara\SDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
+// $config = AvalaraSDK\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Authorization', 'Bearer');
 
 
-$apiInstance = new Avalara\SDK\Api\ShippingVerificationApi(
+$apiInstance = new AvalaraSDK\Api\ShippingVerificationApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client(),
@@ -271,7 +271,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**\Avalara\SDK\Model\ShippingVerifyResult**](../Model/ShippingVerifyResult.md)
+[**\AvalaraSDK\Model\ShippingVerifyResult**](../Model/ShippingVerifyResult.md)
 
 ### Authorization
 
