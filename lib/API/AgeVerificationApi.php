@@ -24,7 +24,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.7.5
+ * @version    2.4.18
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -79,7 +79,7 @@ class AgeVerificationApi
     private function setConfiguration($client): void
     {
         $this->verifyAPIClient($client);
-        $client->setSdkVersion("2.4.7.5");
+        $client->setSdkVersion("2.4.18");
         $this->headerSelector = new HeaderSelector(); 
         $this->client = $client;
     }
@@ -347,7 +347,7 @@ class AgeVerificationApi
                 ['application/json']
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.7.5; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.18; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
