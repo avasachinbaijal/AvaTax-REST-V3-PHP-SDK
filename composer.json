@@ -31,10 +31,10 @@
         "friendsofphp/php-cs-fixer": "^2.12"
     },
     "autoload": {
-        "psr-4": { "Avalara\\SDK\\" : "lib/" }
+        "psr-4": { "AvalaraSDK\\" : "lib/" }
     },
     "autoload-dev": {
-        "psr-4": { "Avalara\\SDK\\Test\\" : "test/" }
+        "psr-4": { "AvalaraSDK\\Test\\" : "test/" }
     },
     "scripts": {
         "test": "vendor/bin/phpunit"
