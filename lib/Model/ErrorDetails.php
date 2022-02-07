@@ -5,7 +5,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\SDK
+ * @package  Avalara\\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -23,12 +23,12 @@
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\\SDK\API
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.20
+ * @version    2.4.22-beta
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,17 +39,17 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\\SDK\Model;
 
 use \ArrayAccess;
-use \Avalara\SDK\ObjectSerializer;
+use \Avalara\\SDK\ObjectSerializer;
 
 /**
  * ErrorDetails Class Doc Comment
  *
  * @category Class
  * @description Message Object
- * @package  Avalara\SDK
+ * @package  Avalara\\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  * @implements \ArrayAccess<TKey, TValue>
@@ -73,7 +73,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
       * @var string[]
       */
     protected static $openAPITypes = [
-        'error' => '\Avalara\SDK\Model\ErrorDetailsError'
+        'error' => '\Avalara\\SDK\Model\ErrorDetailsError'
     ];
 
     /**
@@ -222,7 +222,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Gets error
      *
-     * @return \Avalara\SDK\Model\ErrorDetailsError|null
+     * @return \Avalara\\SDK\Model\ErrorDetailsError|null
      */
     public function getError()
     {
@@ -232,7 +232,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
     /**
      * Sets error
      *
-     * @param \Avalara\SDK\Model\ErrorDetailsError|null $error error
+     * @param \Avalara\\SDK\Model\ErrorDetailsError|null $error error
      *
      * @return self
      */
