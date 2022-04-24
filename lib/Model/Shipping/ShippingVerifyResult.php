@@ -18,17 +18,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * Avalara Shipping Verification for Beverage Alcohol
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\SDK\Api\Shipping
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.26
+ * @version    2.4.29
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,7 +39,7 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\SDK\Model\Shipping;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
@@ -79,7 +79,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
         'failure_messages' => 'string',
         'failure_codes' => 'string[]',
         'warning_codes' => 'string[]',
-        'lines' => '\Avalara\SDK\Model\ShippingVerifyResultLines[]'
+        'lines' => '\Avalara\SDK\Model\Shipping\ShippingVerifyResultLines[]'
     ];
 
     /**
@@ -464,7 +464,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
     /**
      * Gets lines
      *
-     * @return \Avalara\SDK\Model\ShippingVerifyResultLines[]|null
+     * @return \Avalara\SDK\Model\Shipping\ShippingVerifyResultLines[]|null
      */
     public function getLines()
     {
@@ -474,7 +474,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
     /**
      * Sets lines
      *
-     * @param \Avalara\SDK\Model\ShippingVerifyResultLines[]|null $lines Describes the results of the checks made for each line in the transaction.
+     * @param \Avalara\SDK\Model\Shipping\ShippingVerifyResultLines[]|null $lines Describes the results of the checks made for each line in the transaction.
      *
      * @return self
      */
@@ -491,7 +491,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset):bool
     {
         return isset($this->container[$offset]);
     }
@@ -503,7 +503,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset):mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -516,7 +516,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -532,7 +532,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset):void
     {
         unset($this->container[$offset]);
     }
@@ -544,7 +544,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize():mixed
     {
        return ObjectSerializer::sanitizeForSerialization($this);
     }
@@ -554,7 +554,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return string
      */
-    public function __toString()
+    public function __toString():string
     {
         return json_encode(
             ObjectSerializer::sanitizeForSerialization($this),
@@ -567,7 +567,7 @@ class ShippingVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializ
      *
      * @return string
      */
-    public function toHeaderValue()
+    public function toHeaderValue():string
     {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * ErrorDetails
+ * AgeVerifyResult
  *
  * PHP version 7.3
  *
@@ -23,12 +23,12 @@
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\SDK\Api\AgeVerification
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.26
+ * @version    2.4.29
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,16 +39,16 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\SDK\Model\AgeVerification;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 
 /**
- * ErrorDetails Class Doc Comment
+ * AgeVerifyResult Class Doc Comment
  *
  * @category Class
- * @description Message Object
+ * @description The Result of a call to the /ageVerification/verify endpoint.
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -56,7 +56,7 @@ use \Avalara\SDK\ObjectSerializer;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
+class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -65,7 +65,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'ErrorDetails';
+    protected static $openAPIModelName = 'AgeVerifyResult';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -73,7 +73,8 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
       * @var string[]
       */
     protected static $openAPITypes = [
-        'error' => '\Avalara\SDK\Model\ErrorDetailsError'
+        'is_of_age' => 'bool',
+        'failure_codes' => '\Avalara\SDK\Model\AgeVerification\AgeVerifyResult[]'
     ];
 
     /**
@@ -84,7 +85,8 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'error' => null
+        'is_of_age' => null,
+        'failure_codes' => null
     ];
 
     /**
@@ -114,7 +116,8 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'error' => 'error'
+        'is_of_age' => 'isOfAge',
+        'failure_codes' => 'failureCodes'
     ];
 
     /**
@@ -123,7 +126,8 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'error' => 'setError'
+        'is_of_age' => 'setIsOfAge',
+        'failure_codes' => 'setFailureCodes'
     ];
 
     /**
@@ -132,7 +136,8 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'error' => 'getError'
+        'is_of_age' => 'getIsOfAge',
+        'failure_codes' => 'getFailureCodes'
     ];
 
     /**
@@ -192,7 +197,8 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(array $data = null)
     {
-        $this->container['error'] = $data['error'] ?? null;
+        $this->container['is_of_age'] = $data['is_of_age'] ?? null;
+        $this->container['failure_codes'] = $data['failure_codes'] ?? null;
     }
 
     /**
@@ -220,25 +226,49 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets error
+     * Gets is_of_age
      *
-     * @return \Avalara\SDK\Model\ErrorDetailsError|null
+     * @return bool|null
      */
-    public function getError()
+    public function getIsOfAge()
     {
-        return $this->container['error'];
+        return $this->container['is_of_age'];
     }
 
     /**
-     * Sets error
+     * Sets is_of_age
      *
-     * @param \Avalara\SDK\Model\ErrorDetailsError|null $error error
+     * @param bool|null $is_of_age Describes whether the individual meets or exceeds the minimum legal drinking age.
      *
      * @return self
      */
-    public function setError($error)
+    public function setIsOfAge($is_of_age)
     {
-        $this->container['error'] = $error;
+        $this->container['is_of_age'] = $is_of_age;
+
+        return $this;
+    }
+
+    /**
+     * Gets failure_codes
+     *
+     * @return \Avalara\SDK\Model\AgeVerification\AgeVerifyResult[]|null
+     */
+    public function getFailureCodes()
+    {
+        return $this->container['failure_codes'];
+    }
+
+    /**
+     * Sets failure_codes
+     *
+     * @param \Avalara\SDK\Model\AgeVerification\AgeVerifyResult[]|null $failure_codes A list of failure codes describing why a *false* age determination was made.
+     *
+     * @return self
+     */
+    public function setFailureCodes($failure_codes)
+    {
+        $this->container['failure_codes'] = $failure_codes;
 
         return $this;
     }
@@ -249,7 +279,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset):bool
     {
         return isset($this->container[$offset]);
     }
@@ -261,7 +291,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset):mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -274,7 +304,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -290,7 +320,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset):void
     {
         unset($this->container[$offset]);
     }
@@ -302,7 +332,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize():mixed
     {
        return ObjectSerializer::sanitizeForSerialization($this);
     }
@@ -312,7 +342,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return string
      */
-    public function __toString()
+    public function __toString():string
     {
         return json_encode(
             ObjectSerializer::sanitizeForSerialization($this),
@@ -325,7 +355,7 @@ class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return string
      */
-    public function toHeaderValue()
+    public function toHeaderValue():string
     {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }

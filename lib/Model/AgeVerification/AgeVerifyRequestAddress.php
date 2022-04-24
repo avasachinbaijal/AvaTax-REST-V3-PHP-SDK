@@ -1,6 +1,6 @@
 <?php
 /**
- * AgeVerifyRequest
+ * AgeVerifyRequestAddress
  *
  * PHP version 7.3
  *
@@ -23,12 +23,12 @@
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\SDK\Api\AgeVerification
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.26
+ * @version    2.4.29
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,16 +39,15 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\SDK\Model\AgeVerification;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 
 /**
- * AgeVerifyRequest Class Doc Comment
+ * AgeVerifyRequestAddress Class Doc Comment
  *
  * @category Class
- * @description The Request for the /ageVerification/verify endpoint. Describes information about the person whose age is being verified.
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -56,7 +55,7 @@ use \Avalara\SDK\ObjectSerializer;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
+class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -65,7 +64,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'AgeVerifyRequest';
+    protected static $openAPIModelName = 'AgeVerifyRequest_address';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -73,10 +72,11 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
       * @var string[]
       */
     protected static $openAPITypes = [
-        'first_name' => 'string',
-        'last_name' => 'string',
-        'address' => '\Avalara\SDK\Model\AgeVerifyRequestAddress',
-        'dob' => 'string'
+        'line1' => 'string',
+        'city' => 'string',
+        'region' => 'string',
+        'country' => 'string',
+        'postal_code' => 'string'
     ];
 
     /**
@@ -87,10 +87,11 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'first_name' => null,
-        'last_name' => null,
-        'address' => null,
-        'dob' => null
+        'line1' => null,
+        'city' => null,
+        'region' => null,
+        'country' => null,
+        'postal_code' => null
     ];
 
     /**
@@ -120,10 +121,11 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'first_name' => 'firstName',
-        'last_name' => 'lastName',
-        'address' => 'address',
-        'dob' => 'DOB'
+        'line1' => 'line1',
+        'city' => 'city',
+        'region' => 'region',
+        'country' => 'country',
+        'postal_code' => 'postalCode'
     ];
 
     /**
@@ -132,10 +134,11 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'first_name' => 'setFirstName',
-        'last_name' => 'setLastName',
-        'address' => 'setAddress',
-        'dob' => 'setDob'
+        'line1' => 'setLine1',
+        'city' => 'setCity',
+        'region' => 'setRegion',
+        'country' => 'setCountry',
+        'postal_code' => 'setPostalCode'
     ];
 
     /**
@@ -144,10 +147,11 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'first_name' => 'getFirstName',
-        'last_name' => 'getLastName',
-        'address' => 'getAddress',
-        'dob' => 'getDob'
+        'line1' => 'getLine1',
+        'city' => 'getCity',
+        'region' => 'getRegion',
+        'country' => 'getCountry',
+        'postal_code' => 'getPostalCode'
     ];
 
     /**
@@ -191,6 +195,21 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
+    const COUNTRY_US = 'US';
+    const COUNTRY_USA = 'USA';
+
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getCountryAllowableValues()
+    {
+        return [
+            self::COUNTRY_US,
+            self::COUNTRY_USA,
+        ];
+    }
 
     /**
      * Associative array for storing property values
@@ -207,10 +226,11 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(array $data = null)
     {
-        $this->container['first_name'] = $data['first_name'] ?? null;
-        $this->container['last_name'] = $data['last_name'] ?? null;
-        $this->container['address'] = $data['address'] ?? null;
-        $this->container['dob'] = $data['dob'] ?? null;
+        $this->container['line1'] = $data['line1'] ?? null;
+        $this->container['city'] = $data['city'] ?? null;
+        $this->container['region'] = $data['region'] ?? null;
+        $this->container['country'] = $data['country'] ?? null;
+        $this->container['postal_code'] = $data['postal_code'] ?? null;
     }
 
     /**
@@ -221,6 +241,15 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
     public function listInvalidProperties()
     {
         $invalidProperties = [];
+
+        $allowedValues = $this->getCountryAllowableValues();
+        if (!is_null($this->container['country']) && !in_array($this->container['country'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value '%s' for 'country', must be one of '%s'",
+                $this->container['country'],
+                implode("', '", $allowedValues)
+            );
+        }
 
         return $invalidProperties;
     }
@@ -238,97 +267,131 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets first_name
+     * Gets line1
      *
      * @return string|null
      */
-    public function getFirstName()
+    public function getLine1()
     {
-        return $this->container['first_name'];
+        return $this->container['line1'];
     }
 
     /**
-     * Sets first_name
+     * Sets line1
      *
-     * @param string|null $first_name first_name
+     * @param string|null $line1 line1
      *
      * @return self
      */
-    public function setFirstName($first_name)
+    public function setLine1($line1)
     {
-        $this->container['first_name'] = $first_name;
+        $this->container['line1'] = $line1;
 
         return $this;
     }
 
     /**
-     * Gets last_name
+     * Gets city
      *
      * @return string|null
      */
-    public function getLastName()
+    public function getCity()
     {
-        return $this->container['last_name'];
+        return $this->container['city'];
     }
 
     /**
-     * Sets last_name
+     * Sets city
      *
-     * @param string|null $last_name last_name
+     * @param string|null $city city
      *
      * @return self
      */
-    public function setLastName($last_name)
+    public function setCity($city)
     {
-        $this->container['last_name'] = $last_name;
+        $this->container['city'] = $city;
 
         return $this;
     }
 
     /**
-     * Gets address
+     * Gets region
      *
-     * @return \Avalara\SDK\Model\AgeVerifyRequestAddress|null
+     * @return string|null
      */
-    public function getAddress()
+    public function getRegion()
     {
-        return $this->container['address'];
+        return $this->container['region'];
     }
 
     /**
-     * Sets address
+     * Sets region
      *
-     * @param \Avalara\SDK\Model\AgeVerifyRequestAddress|null $address address
+     * @param string|null $region The state code of the address.
      *
      * @return self
      */
-    public function setAddress($address)
+    public function setRegion($region)
     {
-        $this->container['address'] = $address;
+        $this->container['region'] = $region;
 
         return $this;
     }
 
     /**
-     * Gets dob
+     * Gets country
      *
      * @return string|null
      */
-    public function getDob()
+    public function getCountry()
     {
-        return $this->container['dob'];
+        return $this->container['country'];
     }
 
     /**
-     * Sets dob
+     * Sets country
      *
-     * @param string|null $dob The value should be ISO-8601 compliant (e.g. 2020-07-21).
+     * @param string|null $country The country code of the address.
      *
      * @return self
      */
-    public function setDob($dob)
+    public function setCountry($country)
     {
-        $this->container['dob'] = $dob;
+        $allowedValues = $this->getCountryAllowableValues();
+        if (!is_null($country) && !in_array($country, $allowedValues, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "Invalid value '%s' for 'country', must be one of '%s'",
+                    $country,
+                    implode("', '", $allowedValues)
+                )
+            );
+        }
+        $this->container['country'] = $country;
+
+        return $this;
+    }
+
+    /**
+     * Gets postal_code
+     *
+     * @return string|null
+     */
+    public function getPostalCode()
+    {
+        return $this->container['postal_code'];
+    }
+
+    /**
+     * Sets postal_code
+     *
+     * @param string|null $postal_code postal_code
+     *
+     * @return self
+     */
+    public function setPostalCode($postal_code)
+    {
+        $this->container['postal_code'] = $postal_code;
 
         return $this;
     }
@@ -339,7 +402,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset):bool
     {
         return isset($this->container[$offset]);
     }
@@ -351,7 +414,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset):mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -364,7 +427,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -380,7 +443,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset):void
     {
         unset($this->container[$offset]);
     }
@@ -392,7 +455,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize():mixed
     {
        return ObjectSerializer::sanitizeForSerialization($this);
     }
@@ -402,7 +465,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return string
      */
-    public function __toString()
+    public function __toString():string
     {
         return json_encode(
             ObjectSerializer::sanitizeForSerialization($this),
@@ -415,7 +478,7 @@ class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return string
      */
-    public function toHeaderValue()
+    public function toHeaderValue():string
     {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }

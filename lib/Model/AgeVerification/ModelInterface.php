@@ -5,7 +5,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\SDK\Model
+ * @package  Avalara\SDK\Model\AgeVerification
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -23,12 +23,12 @@
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\SDK\Api\AgeVerification
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.26
+ * @version    2.4.29
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,12 +39,12 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\SDK\Model\AgeVerification;
 
 /**
  * Interface abstracting model access.
  *
- * @package Avalara\SDK\Model
+ * @package Avalara\SDK\Model\AgeVerification
  * @author  OpenAPI Generator team
  */
 interface ModelInterface

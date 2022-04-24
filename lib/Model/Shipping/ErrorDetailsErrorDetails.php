@@ -1,6 +1,6 @@
 <?php
 /**
- * ShippingVerifyResultLines
+ * ErrorDetailsErrorDetails
  *
  * PHP version 7.3
  *
@@ -18,17 +18,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * Avalara Shipping Verification for Beverage Alcohol
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\SDK\Api\Shipping
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.26
+ * @version    2.4.29
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,15 +39,16 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\SDK\Model\Shipping;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 
 /**
- * ShippingVerifyResultLines Class Doc Comment
+ * ErrorDetailsErrorDetails Class Doc Comment
  *
  * @category Class
+ * @description Message Details Object
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -55,7 +56,7 @@ use \Avalara\SDK\ObjectSerializer;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSerializable
+class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -64,7 +65,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
       *
       * @var string
       */
-    protected static $openAPIModelName = 'ShippingVerifyResult_lines';
+    protected static $openAPIModelName = 'ErrorDetails_error_details';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -72,12 +73,13 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
       * @var string[]
       */
     protected static $openAPITypes = [
-        'result_code' => 'string',
-        'line_number' => 'string',
+        'code' => 'string',
         'message' => 'string',
-        'success_messages' => 'string',
-        'failure_messages' => 'string',
-        'failure_codes' => 'string[]'
+        'number' => 'int',
+        'description' => 'string',
+        'fault_code' => 'string',
+        'help_link' => 'string',
+        'severity' => 'string'
     ];
 
     /**
@@ -88,12 +90,13 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'result_code' => null,
-        'line_number' => null,
+        'code' => null,
         'message' => null,
-        'success_messages' => null,
-        'failure_messages' => null,
-        'failure_codes' => null
+        'number' => null,
+        'description' => null,
+        'fault_code' => null,
+        'help_link' => null,
+        'severity' => null
     ];
 
     /**
@@ -123,12 +126,13 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      * @var string[]
      */
     protected static $attributeMap = [
-        'result_code' => 'resultCode',
-        'line_number' => 'lineNumber',
+        'code' => 'code',
         'message' => 'message',
-        'success_messages' => 'successMessages',
-        'failure_messages' => 'failureMessages',
-        'failure_codes' => 'failureCodes'
+        'number' => 'number',
+        'description' => 'description',
+        'fault_code' => 'faultCode',
+        'help_link' => 'helpLink',
+        'severity' => 'severity'
     ];
 
     /**
@@ -137,12 +141,13 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      * @var string[]
      */
     protected static $setters = [
-        'result_code' => 'setResultCode',
-        'line_number' => 'setLineNumber',
+        'code' => 'setCode',
         'message' => 'setMessage',
-        'success_messages' => 'setSuccessMessages',
-        'failure_messages' => 'setFailureMessages',
-        'failure_codes' => 'setFailureCodes'
+        'number' => 'setNumber',
+        'description' => 'setDescription',
+        'fault_code' => 'setFaultCode',
+        'help_link' => 'setHelpLink',
+        'severity' => 'setSeverity'
     ];
 
     /**
@@ -151,12 +156,13 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      * @var string[]
      */
     protected static $getters = [
-        'result_code' => 'getResultCode',
-        'line_number' => 'getLineNumber',
+        'code' => 'getCode',
         'message' => 'getMessage',
-        'success_messages' => 'getSuccessMessages',
-        'failure_messages' => 'getFailureMessages',
-        'failure_codes' => 'getFailureCodes'
+        'number' => 'getNumber',
+        'description' => 'getDescription',
+        'fault_code' => 'getFaultCode',
+        'help_link' => 'getHelpLink',
+        'severity' => 'getSeverity'
     ];
 
     /**
@@ -200,34 +206,26 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
         return self::$openAPIModelName;
     }
 
-    const RESULT_CODE_COMPLIANT = 'Compliant';
-    const RESULT_CODE_NOT_COMPLIANT = 'NotCompliant';
-    const RESULT_CODE_UNSUPPORTED_TAX_CODE = 'UnsupportedTaxCode';
-    const RESULT_CODE_UNSUPPORTED_ADDRESS = 'UnsupportedAddress';
-    const RESULT_CODE_INVALID_LINE = 'InvalidLine';
-    const FAILURE_CODES_BELOW_LEGAL_DRINKING_AGE = 'BelowLegalDrinkingAge';
-    const FAILURE_CODES_SHIPPING_PROHIBITED_TO_ADDRESS = 'ShippingProhibitedToAddress';
-    const FAILURE_CODES_MISSING_REQUIRED_LICENSE = 'MissingRequiredLicense';
-    const FAILURE_CODES_VOLUME_LIMIT_EXCEEDED = 'VolumeLimitExceeded';
-    const FAILURE_CODES_INVALID_FIELD_VALUE = 'InvalidFieldValue';
-    const FAILURE_CODES_MISSING_REQUIRED_FIELD = 'MissingRequiredField';
-    const FAILURE_CODES_INVALID_FIELD_TYPE = 'InvalidFieldType';
-    const FAILURE_CODES_INVALID_FORMAT = 'InvalidFormat';
-    const FAILURE_CODES_INVALID_DATE = 'InvalidDate';
+    const CODE_AUTHENTICATION_EXCEPTION = 'AuthenticationException';
+    const CODE_SUBSCRIPTION_REQUIRED = 'SubscriptionRequired';
+    const CODE_UNHANDLED_EXCEPTION = 'UnhandledException';
+    const CODE_INVALID_ADDRESS = 'InvalidAddress';
+    const CODE_ENTITY_NOT_FOUND_ERROR = 'EntityNotFoundError';
+    const SEVERITY_ERROR = 'Error';
 
     /**
      * Gets allowable values of the enum
      *
      * @return string[]
      */
-    public function getResultCodeAllowableValues()
+    public function getCodeAllowableValues()
     {
         return [
-            self::RESULT_CODE_COMPLIANT,
-            self::RESULT_CODE_NOT_COMPLIANT,
-            self::RESULT_CODE_UNSUPPORTED_TAX_CODE,
-            self::RESULT_CODE_UNSUPPORTED_ADDRESS,
-            self::RESULT_CODE_INVALID_LINE,
+            self::CODE_AUTHENTICATION_EXCEPTION,
+            self::CODE_SUBSCRIPTION_REQUIRED,
+            self::CODE_UNHANDLED_EXCEPTION,
+            self::CODE_INVALID_ADDRESS,
+            self::CODE_ENTITY_NOT_FOUND_ERROR,
         ];
     }
 
@@ -236,18 +234,10 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      *
      * @return string[]
      */
-    public function getFailureCodesAllowableValues()
+    public function getSeverityAllowableValues()
     {
         return [
-            self::FAILURE_CODES_BELOW_LEGAL_DRINKING_AGE,
-            self::FAILURE_CODES_SHIPPING_PROHIBITED_TO_ADDRESS,
-            self::FAILURE_CODES_MISSING_REQUIRED_LICENSE,
-            self::FAILURE_CODES_VOLUME_LIMIT_EXCEEDED,
-            self::FAILURE_CODES_INVALID_FIELD_VALUE,
-            self::FAILURE_CODES_MISSING_REQUIRED_FIELD,
-            self::FAILURE_CODES_INVALID_FIELD_TYPE,
-            self::FAILURE_CODES_INVALID_FORMAT,
-            self::FAILURE_CODES_INVALID_DATE,
+            self::SEVERITY_ERROR,
         ];
     }
 
@@ -266,12 +256,13 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      */
     public function __construct(array $data = null)
     {
-        $this->container['result_code'] = $data['result_code'] ?? null;
-        $this->container['line_number'] = $data['line_number'] ?? null;
+        $this->container['code'] = $data['code'] ?? null;
         $this->container['message'] = $data['message'] ?? null;
-        $this->container['success_messages'] = $data['success_messages'] ?? null;
-        $this->container['failure_messages'] = $data['failure_messages'] ?? null;
-        $this->container['failure_codes'] = $data['failure_codes'] ?? null;
+        $this->container['number'] = $data['number'] ?? null;
+        $this->container['description'] = $data['description'] ?? null;
+        $this->container['fault_code'] = $data['fault_code'] ?? null;
+        $this->container['help_link'] = $data['help_link'] ?? null;
+        $this->container['severity'] = $data['severity'] ?? null;
     }
 
     /**
@@ -283,11 +274,20 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
     {
         $invalidProperties = [];
 
-        $allowedValues = $this->getResultCodeAllowableValues();
-        if (!is_null($this->container['result_code']) && !in_array($this->container['result_code'], $allowedValues, true)) {
+        $allowedValues = $this->getCodeAllowableValues();
+        if (!is_null($this->container['code']) && !in_array($this->container['code'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'result_code', must be one of '%s'",
-                $this->container['result_code'],
+                "invalid value '%s' for 'code', must be one of '%s'",
+                $this->container['code'],
+                implode("', '", $allowedValues)
+            );
+        }
+
+        $allowedValues = $this->getSeverityAllowableValues();
+        if (!is_null($this->container['severity']) && !in_array($this->container['severity'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value '%s' for 'severity', must be one of '%s'",
+                $this->container['severity'],
                 implode("', '", $allowedValues)
             );
         }
@@ -308,59 +308,35 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
 
 
     /**
-     * Gets result_code
+     * Gets code
      *
      * @return string|null
      */
-    public function getResultCode()
+    public function getCode()
     {
-        return $this->container['result_code'];
+        return $this->container['code'];
     }
 
     /**
-     * Sets result_code
+     * Sets code
      *
-     * @param string|null $result_code Describes whether the line is compliant or not. In cases where a determination could not be made, resultCode will provide the reason why.
+     * @param string|null $code Name of the error or message.
      *
      * @return self
      */
-    public function setResultCode($result_code)
+    public function setCode($code)
     {
-        $allowedValues = $this->getResultCodeAllowableValues();
-        if (!is_null($result_code) && !in_array($result_code, $allowedValues, true)) {
+        $allowedValues = $this->getCodeAllowableValues();
+        if (!is_null($code) && !in_array($code, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'result_code', must be one of '%s'",
-                    $result_code,
+                    "Invalid value '%s' for 'code', must be one of '%s'",
+                    $code,
                     implode("', '", $allowedValues)
                 )
             );
         }
-        $this->container['result_code'] = $result_code;
-
-        return $this;
-    }
-
-    /**
-     * Gets line_number
-     *
-     * @return string|null
-     */
-    public function getLineNumber()
-    {
-        return $this->container['line_number'];
-    }
-
-    /**
-     * Sets line_number
-     *
-     * @param string|null $line_number The lineNumber of the line evaluated.
-     *
-     * @return self
-     */
-    public function setLineNumber($line_number)
-    {
-        $this->container['line_number'] = $line_number;
+        $this->container['code'] = $code;
 
         return $this;
     }
@@ -378,7 +354,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
     /**
      * Sets message
      *
-     * @param string|null $message A short description of the result of the checks made against this line.
+     * @param string|null $message Concise summary of the message, suitable for display in the caption of an alert box.
      *
      * @return self
      */
@@ -390,82 +366,131 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
     }
 
     /**
-     * Gets success_messages
+     * Gets number
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getSuccessMessages()
+    public function getNumber()
     {
-        return $this->container['success_messages'];
+        return $this->container['number'];
     }
 
     /**
-     * Sets success_messages
+     * Sets number
      *
-     * @param string|null $success_messages A detailed description of the result of each of the passed checks made against this line.
+     * @param int|null $number Unique ID number referring to this error or message.
      *
      * @return self
      */
-    public function setSuccessMessages($success_messages)
+    public function setNumber($number)
     {
-        $this->container['success_messages'] = $success_messages;
+        $this->container['number'] = $number;
 
         return $this;
     }
 
     /**
-     * Gets failure_messages
+     * Gets description
      *
      * @return string|null
      */
-    public function getFailureMessages()
+    public function getDescription()
     {
-        return $this->container['failure_messages'];
+        return $this->container['description'];
     }
 
     /**
-     * Sets failure_messages
+     * Sets description
      *
-     * @param string|null $failure_messages A detailed description of the result of each of the failed checks made against this line.
+     * @param string|null $description A more detailed description of the problem referenced by this error message, suitable for display in the contents area of an alert box.
      *
      * @return self
      */
-    public function setFailureMessages($failure_messages)
+    public function setDescription($description)
     {
-        $this->container['failure_messages'] = $failure_messages;
+        $this->container['description'] = $description;
 
         return $this;
     }
 
     /**
-     * Gets failure_codes
+     * Gets fault_code
      *
-     * @return string[]|null
+     * @return string|null
      */
-    public function getFailureCodes()
+    public function getFaultCode()
     {
-        return $this->container['failure_codes'];
+        return $this->container['fault_code'];
     }
 
     /**
-     * Sets failure_codes
+     * Sets fault_code
      *
-     * @param string[]|null $failure_codes An enumeration of all the failure codes received for this line.
+     * @param string|null $fault_code Indicates the SOAP Fault code, if this was related to an error that corresponded to AvaTax SOAP v1 behavior.
      *
      * @return self
      */
-    public function setFailureCodes($failure_codes)
+    public function setFaultCode($fault_code)
     {
-        $allowedValues = $this->getFailureCodesAllowableValues();
-        if (!is_null($failure_codes) && array_diff($failure_codes, $allowedValues)) {
+        $this->container['fault_code'] = $fault_code;
+
+        return $this;
+    }
+
+    /**
+     * Gets help_link
+     *
+     * @return string|null
+     */
+    public function getHelpLink()
+    {
+        return $this->container['help_link'];
+    }
+
+    /**
+     * Sets help_link
+     *
+     * @param string|null $help_link URL to help for this message
+     *
+     * @return self
+     */
+    public function setHelpLink($help_link)
+    {
+        $this->container['help_link'] = $help_link;
+
+        return $this;
+    }
+
+    /**
+     * Gets severity
+     *
+     * @return string|null
+     */
+    public function getSeverity()
+    {
+        return $this->container['severity'];
+    }
+
+    /**
+     * Sets severity
+     *
+     * @param string|null $severity Severity of the message
+     *
+     * @return self
+     */
+    public function setSeverity($severity)
+    {
+        $allowedValues = $this->getSeverityAllowableValues();
+        if (!is_null($severity) && !in_array($severity, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value for 'failure_codes', must be one of '%s'",
+                    "Invalid value '%s' for 'severity', must be one of '%s'",
+                    $severity,
                     implode("', '", $allowedValues)
                 )
             );
         }
-        $this->container['failure_codes'] = $failure_codes;
+        $this->container['severity'] = $severity;
 
         return $this;
     }
@@ -476,7 +501,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset):bool
     {
         return isset($this->container[$offset]);
     }
@@ -488,7 +513,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset):mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -501,7 +526,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -517,7 +542,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset):void
     {
         unset($this->container[$offset]);
     }
@@ -529,7 +554,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize():mixed
     {
        return ObjectSerializer::sanitizeForSerialization($this);
     }
@@ -539,7 +564,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      *
      * @return string
      */
-    public function __toString()
+    public function __toString():string
     {
         return json_encode(
             ObjectSerializer::sanitizeForSerialization($this),
@@ -552,7 +577,7 @@ class ShippingVerifyResultLines implements ModelInterface, ArrayAccess, \JsonSer
      *
      * @return string
      */
-    public function toHeaderValue()
+    public function toHeaderValue():string
     {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }

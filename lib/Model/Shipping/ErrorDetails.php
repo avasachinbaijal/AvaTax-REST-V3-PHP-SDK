@@ -1,6 +1,6 @@
 <?php
 /**
- * ErrorDetailsError
+ * ErrorDetails
  *
  * PHP version 7.3
  *
@@ -18,17 +18,17 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * Avalara Shipping Verification for Beverage Alcohol
  *
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\SDK\Api\Shipping
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.26
+ * @version    2.4.29
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,16 +39,16 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\SDK\Model\Shipping;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 
 /**
- * ErrorDetailsError Class Doc Comment
+ * ErrorDetails Class Doc Comment
  *
  * @category Class
- * @description An object holding details about the error.
+ * @description Message Object
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -56,7 +56,7 @@ use \Avalara\SDK\ObjectSerializer;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializable
+class ErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -65,7 +65,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
       *
       * @var string
       */
-    protected static $openAPIModelName = 'ErrorDetails_error';
+    protected static $openAPIModelName = 'ErrorDetails';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -73,9 +73,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
       * @var string[]
       */
     protected static $openAPITypes = [
-        'code' => 'string',
-        'message' => 'string',
-        'details' => '\Avalara\SDK\Model\ErrorDetailsErrorDetails'
+        'error' => '\Avalara\SDK\Model\Shipping\ErrorDetailsError'
     ];
 
     /**
@@ -86,9 +84,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'code' => null,
-        'message' => null,
-        'details' => null
+        'error' => null
     ];
 
     /**
@@ -118,9 +114,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      * @var string[]
      */
     protected static $attributeMap = [
-        'code' => 'code',
-        'message' => 'message',
-        'details' => 'details'
+        'error' => 'error'
     ];
 
     /**
@@ -129,9 +123,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      * @var string[]
      */
     protected static $setters = [
-        'code' => 'setCode',
-        'message' => 'setMessage',
-        'details' => 'setDetails'
+        'error' => 'setError'
     ];
 
     /**
@@ -140,9 +132,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      * @var string[]
      */
     protected static $getters = [
-        'code' => 'getCode',
-        'message' => 'getMessage',
-        'details' => 'getDetails'
+        'error' => 'getError'
     ];
 
     /**
@@ -186,27 +176,6 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
         return self::$openAPIModelName;
     }
 
-    const CODE_AUTHENTICATION_EXCEPTION = 'AuthenticationException';
-    const CODE_SUBSCRIPTION_REQUIRED = 'SubscriptionRequired';
-    const CODE_SERVER_CONFIGURATION = 'ServerConfiguration';
-    const CODE_INVALID_ADDRESS = 'InvalidAddress';
-    const CODE_ENTITY_NOT_FOUND_ERROR = 'EntityNotFoundError';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getCodeAllowableValues()
-    {
-        return [
-            self::CODE_AUTHENTICATION_EXCEPTION,
-            self::CODE_SUBSCRIPTION_REQUIRED,
-            self::CODE_SERVER_CONFIGURATION,
-            self::CODE_INVALID_ADDRESS,
-            self::CODE_ENTITY_NOT_FOUND_ERROR,
-        ];
-    }
 
     /**
      * Associative array for storing property values
@@ -223,9 +192,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      */
     public function __construct(array $data = null)
     {
-        $this->container['code'] = $data['code'] ?? null;
-        $this->container['message'] = $data['message'] ?? null;
-        $this->container['details'] = $data['details'] ?? null;
+        $this->container['error'] = $data['error'] ?? null;
     }
 
     /**
@@ -236,15 +203,6 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
     public function listInvalidProperties()
     {
         $invalidProperties = [];
-
-        $allowedValues = $this->getCodeAllowableValues();
-        if (!is_null($this->container['code']) && !in_array($this->container['code'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'code', must be one of '%s'",
-                $this->container['code'],
-                implode("', '", $allowedValues)
-            );
-        }
 
         return $invalidProperties;
     }
@@ -262,83 +220,25 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
 
 
     /**
-     * Gets code
+     * Gets error
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\Shipping\ErrorDetailsError|null
      */
-    public function getCode()
+    public function getError()
     {
-        return $this->container['code'];
+        return $this->container['error'];
     }
 
     /**
-     * Sets code
+     * Sets error
      *
-     * @param string|null $code Name of the error or message.
+     * @param \Avalara\SDK\Model\Shipping\ErrorDetailsError|null $error error
      *
      * @return self
      */
-    public function setCode($code)
+    public function setError($error)
     {
-        $allowedValues = $this->getCodeAllowableValues();
-        if (!is_null($code) && !in_array($code, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'code', must be one of '%s'",
-                    $code,
-                    implode("', '", $allowedValues)
-                )
-            );
-        }
-        $this->container['code'] = $code;
-
-        return $this;
-    }
-
-    /**
-     * Gets message
-     *
-     * @return string|null
-     */
-    public function getMessage()
-    {
-        return $this->container['message'];
-    }
-
-    /**
-     * Sets message
-     *
-     * @param string|null $message Concise summary of the message, suitable for display in the caption of an alert box.
-     *
-     * @return self
-     */
-    public function setMessage($message)
-    {
-        $this->container['message'] = $message;
-
-        return $this;
-    }
-
-    /**
-     * Gets details
-     *
-     * @return \Avalara\SDK\Model\ErrorDetailsErrorDetails|null
-     */
-    public function getDetails()
-    {
-        return $this->container['details'];
-    }
-
-    /**
-     * Sets details
-     *
-     * @param \Avalara\SDK\Model\ErrorDetailsErrorDetails|null $details details
-     *
-     * @return self
-     */
-    public function setDetails($details)
-    {
-        $this->container['details'] = $details;
+        $this->container['error'] = $error;
 
         return $this;
     }
@@ -349,7 +249,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset):bool
     {
         return isset($this->container[$offset]);
     }
@@ -361,7 +261,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset):mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -374,7 +274,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -390,7 +290,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset):void
     {
         unset($this->container[$offset]);
     }
@@ -402,7 +302,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize():mixed
     {
        return ObjectSerializer::sanitizeForSerialization($this);
     }
@@ -412,7 +312,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return string
      */
-    public function __toString()
+    public function __toString():string
     {
         return json_encode(
             ObjectSerializer::sanitizeForSerialization($this),
@@ -425,7 +325,7 @@ class ErrorDetailsError implements ModelInterface, ArrayAccess, \JsonSerializabl
      *
      * @return string
      */
-    public function toHeaderValue()
+    public function toHeaderValue():string
     {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }

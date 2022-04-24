@@ -1,6 +1,6 @@
 <?php
 /**
- * AgeVerifyResult
+ * AgeVerifyRequest
  *
  * PHP version 7.3
  *
@@ -23,12 +23,12 @@
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API
+ * @package    Avalara\SDK\Api\AgeVerification
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.26
+ * @version    2.4.29
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -39,16 +39,16 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model;
+namespace Avalara\SDK\Model\AgeVerification;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 
 /**
- * AgeVerifyResult Class Doc Comment
+ * AgeVerifyRequest Class Doc Comment
  *
  * @category Class
- * @description The Result of a call to the /ageVerification/verify endpoint.
+ * @description The Request for the /ageVerification/verify endpoint. Describes information about the person whose age is being verified.
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -56,7 +56,7 @@ use \Avalara\SDK\ObjectSerializer;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
+class AgeVerifyRequest implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -65,7 +65,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'AgeVerifyResult';
+    protected static $openAPIModelName = 'AgeVerifyRequest';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -73,8 +73,10 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
       * @var string[]
       */
     protected static $openAPITypes = [
-        'is_of_age' => 'bool',
-        'failure_codes' => '\Avalara\SDK\Model\AgeVerifyResult[]'
+        'first_name' => 'string',
+        'last_name' => 'string',
+        'address' => '\Avalara\SDK\Model\AgeVerification\AgeVerifyRequestAddress',
+        'dob' => 'string'
     ];
 
     /**
@@ -85,8 +87,10 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'is_of_age' => null,
-        'failure_codes' => null
+        'first_name' => null,
+        'last_name' => null,
+        'address' => null,
+        'dob' => null
     ];
 
     /**
@@ -116,8 +120,10 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'is_of_age' => 'isOfAge',
-        'failure_codes' => 'failureCodes'
+        'first_name' => 'firstName',
+        'last_name' => 'lastName',
+        'address' => 'address',
+        'dob' => 'DOB'
     ];
 
     /**
@@ -126,8 +132,10 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'is_of_age' => 'setIsOfAge',
-        'failure_codes' => 'setFailureCodes'
+        'first_name' => 'setFirstName',
+        'last_name' => 'setLastName',
+        'address' => 'setAddress',
+        'dob' => 'setDob'
     ];
 
     /**
@@ -136,8 +144,10 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'is_of_age' => 'getIsOfAge',
-        'failure_codes' => 'getFailureCodes'
+        'first_name' => 'getFirstName',
+        'last_name' => 'getLastName',
+        'address' => 'getAddress',
+        'dob' => 'getDob'
     ];
 
     /**
@@ -197,8 +207,10 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(array $data = null)
     {
-        $this->container['is_of_age'] = $data['is_of_age'] ?? null;
-        $this->container['failure_codes'] = $data['failure_codes'] ?? null;
+        $this->container['first_name'] = $data['first_name'] ?? null;
+        $this->container['last_name'] = $data['last_name'] ?? null;
+        $this->container['address'] = $data['address'] ?? null;
+        $this->container['dob'] = $data['dob'] ?? null;
     }
 
     /**
@@ -226,49 +238,97 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
 
 
     /**
-     * Gets is_of_age
+     * Gets first_name
      *
-     * @return bool|null
+     * @return string|null
      */
-    public function getIsOfAge()
+    public function getFirstName()
     {
-        return $this->container['is_of_age'];
+        return $this->container['first_name'];
     }
 
     /**
-     * Sets is_of_age
+     * Sets first_name
      *
-     * @param bool|null $is_of_age Describes whether the individual meets or exceeds the minimum legal drinking age.
+     * @param string|null $first_name first_name
      *
      * @return self
      */
-    public function setIsOfAge($is_of_age)
+    public function setFirstName($first_name)
     {
-        $this->container['is_of_age'] = $is_of_age;
+        $this->container['first_name'] = $first_name;
 
         return $this;
     }
 
     /**
-     * Gets failure_codes
+     * Gets last_name
      *
-     * @return \Avalara\SDK\Model\AgeVerifyResult[]|null
+     * @return string|null
      */
-    public function getFailureCodes()
+    public function getLastName()
     {
-        return $this->container['failure_codes'];
+        return $this->container['last_name'];
     }
 
     /**
-     * Sets failure_codes
+     * Sets last_name
      *
-     * @param \Avalara\SDK\Model\AgeVerifyResult[]|null $failure_codes A list of failure codes describing why a *false* age determination was made.
+     * @param string|null $last_name last_name
      *
      * @return self
      */
-    public function setFailureCodes($failure_codes)
+    public function setLastName($last_name)
     {
-        $this->container['failure_codes'] = $failure_codes;
+        $this->container['last_name'] = $last_name;
+
+        return $this;
+    }
+
+    /**
+     * Gets address
+     *
+     * @return \Avalara\SDK\Model\AgeVerification\AgeVerifyRequestAddress|null
+     */
+    public function getAddress()
+    {
+        return $this->container['address'];
+    }
+
+    /**
+     * Sets address
+     *
+     * @param \Avalara\SDK\Model\AgeVerification\AgeVerifyRequestAddress|null $address address
+     *
+     * @return self
+     */
+    public function setAddress($address)
+    {
+        $this->container['address'] = $address;
+
+        return $this;
+    }
+
+    /**
+     * Gets dob
+     *
+     * @return string|null
+     */
+    public function getDob()
+    {
+        return $this->container['dob'];
+    }
+
+    /**
+     * Sets dob
+     *
+     * @param string|null $dob The value should be ISO-8601 compliant (e.g. 2020-07-21).
+     *
+     * @return self
+     */
+    public function setDob($dob)
+    {
+        $this->container['dob'] = $dob;
 
         return $this;
     }
@@ -279,7 +339,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return boolean
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset):bool
     {
         return isset($this->container[$offset]);
     }
@@ -291,7 +351,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return mixed|null
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset):mixed
     {
         return $this->container[$offset] ?? null;
     }
@@ -304,7 +364,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value):void
     {
         if (is_null($offset)) {
             $this->container[] = $value;
@@ -320,7 +380,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset($offset):void
     {
         unset($this->container[$offset]);
     }
@@ -332,7 +392,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      * @return mixed Returns data which can be serialized by json_encode(), which is a value
      * of any type other than a resource.
      */
-    public function jsonSerialize()
+    public function jsonSerialize():mixed
     {
        return ObjectSerializer::sanitizeForSerialization($this);
     }
@@ -342,7 +402,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return string
      */
-    public function __toString()
+    public function __toString():string
     {
         return json_encode(
             ObjectSerializer::sanitizeForSerialization($this),
@@ -355,7 +415,7 @@ class AgeVerifyResult implements ModelInterface, ArrayAccess, \JsonSerializable
      *
      * @return string
      */
-    public function toHeaderValue()
+    public function toHeaderValue():string
     {
         return json_encode(ObjectSerializer::sanitizeForSerialization($this));
     }
