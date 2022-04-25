@@ -23,13 +23,13 @@ class AgeVerificationApiIntegrationTest extends TestCase
         $config->environment='sandbox';    
 
         $client=  new \Avalara\SDK\ApiClient($config);
-        $apiInstance = new \Avalara\SDK\API\AgeVerificationApi($client);
+        $apiInstance = new \Avalara\SDK\API\AgeVerification\AgeVerificationApi($client);
 
-        $age_verify_add= new  \Avalara\SDK\Model\AgeVerifyRequestAddress();
+        $age_verify_add= new  \Avalara\SDK\Model\AgeVerification\AgeVerifyRequestAddress();
         $age_verify_add->setLine1('255 S King St');
         $age_verify_add->setPostalCode('98109');
 
-        $age_verify_request = new \Avalara\SDK\Model\AgeVerifyRequest(); 
+        $age_verify_request = new \Avalara\SDK\Model\AgeVerification\AgeVerifyRequest(); 
 
         $age_verify_request->setFirstName('Test');
         $age_verify_request->setLastName('Person');
