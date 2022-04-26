@@ -23,12 +23,12 @@
  * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\Api\Shipping
+ * @package    Avalara\SDK\API\Shipping
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.30
+ * @version    2.4.32
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
