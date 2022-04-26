@@ -43,7 +43,7 @@ namespace Avalara\SDK\Model\AgeVerification;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
-
+use \Avalara\SDK\Model\ModelInterface;
 /**
  * AgeVerifyRequestAddress Class Doc Comment
  *

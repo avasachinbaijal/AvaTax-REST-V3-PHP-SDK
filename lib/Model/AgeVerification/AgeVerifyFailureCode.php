@@ -41,7 +41,7 @@
 
 namespace Avalara\SDK\Model\AgeVerification;
 use \Avalara\SDK\ObjectSerializer;
-
+use \Avalara\SDK\Model\ModelInterface;
 /**
  * AgeVerifyFailureCode Class Doc Comment
  *

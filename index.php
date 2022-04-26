@@ -9,12 +9,9 @@ $config = new \Avalara\SDK\Configuration();
 
 
 $config = Avalara\SDK\Configuration::getDefaultConfiguration()
-              ->setUsername('demo.compliance-verification')
-              ->setPassword('sxgv7KK4HX*B7vY@')
-              ->setAppName('sandbox')
-              ->setAppVersion('11')
-              ->setMachineName('local')
-              ->setEnvironment('sandbox');
+              ->setUsername('')
+              ->setPassword('');
+              
 $config->appName="testApplication";
 $config->appVersion='2.1.2';
 $config->machineName='localhost';
@@ -35,12 +32,12 @@ $age_verify_request->setLastName('Person');
 $age_verify_request->setDob('1970-01-01');
 $age_verify_request->setAddress($age_verify_add);
 
-//$result=$apiInstance->verifyAge($age_verify_request);
-//print_r($result);
-
+$result=$apiInstance->verifyAge($age_verify_request);
+print_r($result);
+/*
 $apiInstance2 = new Avalara\SDK\API\Shipping\ShippingVerificationApi($client);
 try {
-    $apiInstance2->deregisterShipment("DEFAULT1", "575f7201-ae11-483a-bc4e-0b3f948e4397", null);
+    $apiInstance2->deregisterShipment("DEFAULT", "575f7201-ae11-483a-bc4e-0b3f948e4397", null);
     print_r('success');
     
 }

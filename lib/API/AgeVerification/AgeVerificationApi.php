@@ -333,10 +333,6 @@ class AgeVerificationApi
                 $queryParams['simulatedFailureCode'] = $simulated_failure_code;
             }
         }
-
-
-
-
         if ($multipart) {
             $headers = $this->headerSelector->selectHeadersForMultipart(
                 ['application/json']

@@ -5,9 +5,9 @@ namespace Avalara\SDK\Test\Integration;
 // require_once(__DIR__ . '/vendor/autoload.php');
 use \Avalara\SDK\Configuration;
 use \Avalara\SDK\ApiClient;
-use \Avalara\SDK\API\AgeVerificationApi;
-use \Avalara\SDK\Model\AgeVerifyRequestAddress;
-use \Avalara\SDK\Model\AgeVerifyRequest;
+use \Avalara\SDK\API\AgeVerification\AgeVerificationApi;
+use \Avalara\SDK\Model\AgeVerification\AgeVerifyRequestAddress;
+use \Avalara\SDK\Model\AgeVerification\AgeVerifyRequest;
 use PHPUnit\Framework\TestCase;
 
 class AgeVerificationApiIntegrationTest extends TestCase
