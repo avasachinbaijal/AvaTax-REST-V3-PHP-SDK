@@ -1,6 +1,6 @@
 <?php
 /**
- * ErrorDetailsErrorDetails
+ * Entitlement
  *
  * PHP version 7.3
  *
@@ -18,12 +18,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API\Shipping
+ * @package    Avalara\SDK\API\IAMDS
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
@@ -39,16 +39,16 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model\Shipping;
+namespace Avalara\SDK\Model\IAMDS;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 use \Avalara\SDK\Model\ModelInterface;
 /**
- * ErrorDetailsErrorDetails Class Doc Comment
+ * Entitlement Class Doc Comment
  *
  * @category Class
- * @description Message Details Object
+ * @description Representation of an Entitlement between an Tenant and a System
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -56,7 +56,7 @@ use \Avalara\SDK\Model\ModelInterface;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
+class Entitlement implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -65,7 +65,7 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
       *
       * @var string
       */
-    protected static $openAPIModelName = 'ErrorDetails_error_details';
+    protected static $openAPIModelName = 'Entitlement';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -73,13 +73,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
       * @var string[]
       */
     protected static $openAPITypes = [
-        'code' => 'string',
-        'message' => 'string',
-        'number' => 'int',
-        'description' => 'string',
-        'fault_code' => 'string',
-        'help_link' => 'string',
-        'severity' => 'string'
+        'display_name' => 'string',
+        'system' => '\Avalara\SDK\Model\IAMDS\Reference',
+        'tenant' => '\Avalara\SDK\Model\IAMDS\Reference',
+        'active' => 'bool',
+        'features' => '\Avalara\SDK\Model\IAMDS\Reference[]',
+        'custom_grants' => '\Avalara\SDK\Model\IAMDS\Reference[]',
+        'id' => 'string',
+        'meta' => '\Avalara\SDK\Model\IAMDS\InstanceMeta',
+        'aspects' => '\Avalara\SDK\Model\IAMDS\Aspect[]',
+        'tags' => '\Avalara\SDK\Model\IAMDS\Tag[]'
     ];
 
     /**
@@ -90,13 +93,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'code' => null,
-        'message' => null,
-        'number' => null,
-        'description' => null,
-        'fault_code' => null,
-        'help_link' => null,
-        'severity' => null
+        'display_name' => null,
+        'system' => null,
+        'tenant' => null,
+        'active' => null,
+        'features' => null,
+        'custom_grants' => null,
+        'id' => null,
+        'meta' => null,
+        'aspects' => null,
+        'tags' => null
     ];
 
     /**
@@ -126,13 +132,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $attributeMap = [
-        'code' => 'code',
-        'message' => 'message',
-        'number' => 'number',
-        'description' => 'description',
-        'fault_code' => 'faultCode',
-        'help_link' => 'helpLink',
-        'severity' => 'severity'
+        'display_name' => 'displayName',
+        'system' => 'system',
+        'tenant' => 'tenant',
+        'active' => 'active',
+        'features' => 'features',
+        'custom_grants' => 'customGrants',
+        'id' => 'id',
+        'meta' => 'meta',
+        'aspects' => 'aspects',
+        'tags' => 'tags'
     ];
 
     /**
@@ -141,13 +150,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $setters = [
-        'code' => 'setCode',
-        'message' => 'setMessage',
-        'number' => 'setNumber',
-        'description' => 'setDescription',
-        'fault_code' => 'setFaultCode',
-        'help_link' => 'setHelpLink',
-        'severity' => 'setSeverity'
+        'display_name' => 'setDisplayName',
+        'system' => 'setSystem',
+        'tenant' => 'setTenant',
+        'active' => 'setActive',
+        'features' => 'setFeatures',
+        'custom_grants' => 'setCustomGrants',
+        'id' => 'setId',
+        'meta' => 'setMeta',
+        'aspects' => 'setAspects',
+        'tags' => 'setTags'
     ];
 
     /**
@@ -156,13 +168,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $getters = [
-        'code' => 'getCode',
-        'message' => 'getMessage',
-        'number' => 'getNumber',
-        'description' => 'getDescription',
-        'fault_code' => 'getFaultCode',
-        'help_link' => 'getHelpLink',
-        'severity' => 'getSeverity'
+        'display_name' => 'getDisplayName',
+        'system' => 'getSystem',
+        'tenant' => 'getTenant',
+        'active' => 'getActive',
+        'features' => 'getFeatures',
+        'custom_grants' => 'getCustomGrants',
+        'id' => 'getId',
+        'meta' => 'getMeta',
+        'aspects' => 'getAspects',
+        'tags' => 'getTags'
     ];
 
     /**
@@ -206,40 +221,6 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
         return self::$openAPIModelName;
     }
 
-    const CODE_AUTHENTICATION_EXCEPTION = 'AuthenticationException';
-    const CODE_SUBSCRIPTION_REQUIRED = 'SubscriptionRequired';
-    const CODE_UNHANDLED_EXCEPTION = 'UnhandledException';
-    const CODE_INVALID_ADDRESS = 'InvalidAddress';
-    const CODE_ENTITY_NOT_FOUND_ERROR = 'EntityNotFoundError';
-    const SEVERITY_ERROR = 'Error';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getCodeAllowableValues()
-    {
-        return [
-            self::CODE_AUTHENTICATION_EXCEPTION,
-            self::CODE_SUBSCRIPTION_REQUIRED,
-            self::CODE_UNHANDLED_EXCEPTION,
-            self::CODE_INVALID_ADDRESS,
-            self::CODE_ENTITY_NOT_FOUND_ERROR,
-        ];
-    }
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getSeverityAllowableValues()
-    {
-        return [
-            self::SEVERITY_ERROR,
-        ];
-    }
 
     /**
      * Associative array for storing property values
@@ -256,13 +237,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
      */
     public function __construct(array $data = null)
     {
-        $this->container['code'] = $data['code'] ?? null;
-        $this->container['message'] = $data['message'] ?? null;
-        $this->container['number'] = $data['number'] ?? null;
-        $this->container['description'] = $data['description'] ?? null;
-        $this->container['fault_code'] = $data['fault_code'] ?? null;
-        $this->container['help_link'] = $data['help_link'] ?? null;
-        $this->container['severity'] = $data['severity'] ?? null;
+        $this->container['display_name'] = $data['display_name'] ?? null;
+        $this->container['system'] = $data['system'] ?? null;
+        $this->container['tenant'] = $data['tenant'] ?? null;
+        $this->container['active'] = $data['active'] ?? true;
+        $this->container['features'] = $data['features'] ?? null;
+        $this->container['custom_grants'] = $data['custom_grants'] ?? null;
+        $this->container['id'] = $data['id'] ?? null;
+        $this->container['meta'] = $data['meta'] ?? null;
+        $this->container['aspects'] = $data['aspects'] ?? null;
+        $this->container['tags'] = $data['tags'] ?? null;
     }
 
     /**
@@ -274,24 +258,15 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
     {
         $invalidProperties = [];
 
-        $allowedValues = $this->getCodeAllowableValues();
-        if (!is_null($this->container['code']) && !in_array($this->container['code'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'code', must be one of '%s'",
-                $this->container['code'],
-                implode("', '", $allowedValues)
-            );
+        if ($this->container['system'] === null) {
+            $invalidProperties[] = "'system' can't be null";
         }
-
-        $allowedValues = $this->getSeverityAllowableValues();
-        if (!is_null($this->container['severity']) && !in_array($this->container['severity'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'severity', must be one of '%s'",
-                $this->container['severity'],
-                implode("', '", $allowedValues)
-            );
+        if ($this->container['tenant'] === null) {
+            $invalidProperties[] = "'tenant' can't be null";
         }
-
+        if ($this->container['id'] === null) {
+            $invalidProperties[] = "'id' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -308,189 +283,241 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
 
 
     /**
-     * Gets code
+     * Gets display_name
      *
      * @return string|null
      */
-    public function getCode()
+    public function getDisplayName()
     {
-        return $this->container['code'];
+        return $this->container['display_name'];
     }
 
     /**
-     * Sets code
+     * Sets display_name
      *
-     * @param string|null $code Name of the error or message.
+     * @param string|null $display_name Name of the entitlement, used for display purposes
      *
      * @return self
      */
-    public function setCode($code)
+    public function setDisplayName($display_name)
     {
-        $allowedValues = $this->getCodeAllowableValues();
-        if (!is_null($code) && !in_array($code, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'code', must be one of '%s'",
-                    $code,
-                    implode("', '", $allowedValues)
-                )
-            );
-        }
-        $this->container['code'] = $code;
+        $this->container['display_name'] = $display_name;
 
         return $this;
     }
 
     /**
-     * Gets message
+     * Gets system
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\IAMDS\Reference
      */
-    public function getMessage()
+    public function getSystem()
     {
-        return $this->container['message'];
+        return $this->container['system'];
     }
 
     /**
-     * Sets message
+     * Sets system
      *
-     * @param string|null $message Concise summary of the message, suitable for display in the caption of an alert box.
+     * @param \Avalara\SDK\Model\IAMDS\Reference $system system
      *
      * @return self
      */
-    public function setMessage($message)
+    public function setSystem($system)
     {
-        $this->container['message'] = $message;
+        $this->container['system'] = $system;
 
         return $this;
     }
 
     /**
-     * Gets number
+     * Gets tenant
      *
-     * @return int|null
+     * @return \Avalara\SDK\Model\IAMDS\Reference
      */
-    public function getNumber()
+    public function getTenant()
     {
-        return $this->container['number'];
+        return $this->container['tenant'];
     }
 
     /**
-     * Sets number
+     * Sets tenant
      *
-     * @param int|null $number Unique ID number referring to this error or message.
+     * @param \Avalara\SDK\Model\IAMDS\Reference $tenant tenant
      *
      * @return self
      */
-    public function setNumber($number)
+    public function setTenant($tenant)
     {
-        $this->container['number'] = $number;
+        $this->container['tenant'] = $tenant;
 
         return $this;
     }
 
     /**
-     * Gets description
+     * Gets active
      *
-     * @return string|null
+     * @return bool|null
      */
-    public function getDescription()
+    public function getActive()
     {
-        return $this->container['description'];
+        return $this->container['active'];
     }
 
     /**
-     * Sets description
+     * Sets active
      *
-     * @param string|null $description A more detailed description of the problem referenced by this error message, suitable for display in the contents area of an alert box.
+     * @param bool|null $active Status of the entitlement - active or inactive
      *
      * @return self
      */
-    public function setDescription($description)
+    public function setActive($active)
     {
-        $this->container['description'] = $description;
+        $this->container['active'] = $active;
 
         return $this;
     }
 
     /**
-     * Gets fault_code
+     * Gets features
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\IAMDS\Reference[]|null
      */
-    public function getFaultCode()
+    public function getFeatures()
     {
-        return $this->container['fault_code'];
+        return $this->container['features'];
     }
 
     /**
-     * Sets fault_code
+     * Sets features
      *
-     * @param string|null $fault_code Indicates the SOAP Fault code, if this was related to an error that corresponded to AvaTax SOAP v1 behavior.
+     * @param \Avalara\SDK\Model\IAMDS\Reference[]|null $features List of features associated with the entitlement
      *
      * @return self
      */
-    public function setFaultCode($fault_code)
+    public function setFeatures($features)
     {
-        $this->container['fault_code'] = $fault_code;
+        $this->container['features'] = $features;
 
         return $this;
     }
 
     /**
-     * Gets help_link
+     * Gets custom_grants
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\IAMDS\Reference[]|null
      */
-    public function getHelpLink()
+    public function getCustomGrants()
     {
-        return $this->container['help_link'];
+        return $this->container['custom_grants'];
     }
 
     /**
-     * Sets help_link
+     * Sets custom_grants
      *
-     * @param string|null $help_link URL to help for this message
+     * @param \Avalara\SDK\Model\IAMDS\Reference[]|null $custom_grants List of custom grants applicable for the entitlement
      *
      * @return self
      */
-    public function setHelpLink($help_link)
+    public function setCustomGrants($custom_grants)
     {
-        $this->container['help_link'] = $help_link;
+        $this->container['custom_grants'] = $custom_grants;
 
         return $this;
     }
 
     /**
-     * Gets severity
+     * Gets id
      *
-     * @return string|null
+     * @return string
      */
-    public function getSeverity()
+    public function getId()
     {
-        return $this->container['severity'];
+        return $this->container['id'];
     }
 
     /**
-     * Sets severity
+     * Sets id
      *
-     * @param string|null $severity Severity of the message
+     * @param string $id Unique identifier for the Object
      *
      * @return self
      */
-    public function setSeverity($severity)
+    public function setId($id)
     {
-        $allowedValues = $this->getSeverityAllowableValues();
-        if (!is_null($severity) && !in_array($severity, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'severity', must be one of '%s'",
-                    $severity,
-                    implode("', '", $allowedValues)
-                )
-            );
-        }
-        $this->container['severity'] = $severity;
+        $this->container['id'] = $id;
+
+        return $this;
+    }
+
+    /**
+     * Gets meta
+     *
+     * @return \Avalara\SDK\Model\IAMDS\InstanceMeta|null
+     */
+    public function getMeta()
+    {
+        return $this->container['meta'];
+    }
+
+    /**
+     * Sets meta
+     *
+     * @param \Avalara\SDK\Model\IAMDS\InstanceMeta|null $meta meta
+     *
+     * @return self
+     */
+    public function setMeta($meta)
+    {
+        $this->container['meta'] = $meta;
+
+        return $this;
+    }
+
+    /**
+     * Gets aspects
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Aspect[]|null
+     */
+    public function getAspects()
+    {
+        return $this->container['aspects'];
+    }
+
+    /**
+     * Sets aspects
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Aspect[]|null $aspects Identifier of the Resource (if any) in other systems
+     *
+     * @return self
+     */
+    public function setAspects($aspects)
+    {
+        $this->container['aspects'] = $aspects;
+
+        return $this;
+    }
+
+    /**
+     * Gets tags
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Tag[]|null
+     */
+    public function getTags()
+    {
+        return $this->container['tags'];
+    }
+
+    /**
+     * Sets tags
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Tag[]|null $tags User defined tags in the form of key:value pair
+     *
+     * @return self
+     */
+    public function setTags($tags)
+    {
+        $this->container['tags'] = $tags;
 
         return $this;
     }

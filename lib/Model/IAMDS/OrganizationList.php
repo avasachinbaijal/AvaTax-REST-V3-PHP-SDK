@@ -1,6 +1,6 @@
 <?php
 /**
- * AgeVerifyRequestAddress
+ * OrganizationList
  *
  * PHP version 7.3
  *
@@ -18,12 +18,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API\AgeVerification
+ * @package    Avalara\SDK\API\IAMDS
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
@@ -39,13 +39,13 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model\AgeVerification;
+namespace Avalara\SDK\Model\IAMDS;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 use \Avalara\SDK\Model\ModelInterface;
 /**
- * AgeVerifyRequestAddress Class Doc Comment
+ * OrganizationList Class Doc Comment
  *
  * @category Class
  * @package  Avalara\SDK
@@ -55,7 +55,7 @@ use \Avalara\SDK\Model\ModelInterface;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSerializable
+class OrganizationList implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -64,7 +64,7 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       *
       * @var string
       */
-    protected static $openAPIModelName = 'AgeVerifyRequest_address';
+    protected static $openAPIModelName = 'OrganizationList';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -72,11 +72,10 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       * @var string[]
       */
     protected static $openAPITypes = [
-        'line1' => 'string',
-        'city' => 'string',
-        'region' => 'string',
-        'country' => 'string',
-        'postal_code' => 'string'
+        'recordset_count' => 'int',
+        'next_link' => 'string',
+        'page_key' => 'string',
+        'items' => '\Avalara\SDK\Model\IAMDS\Organization[]'
     ];
 
     /**
@@ -87,11 +86,10 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'line1' => null,
-        'city' => null,
-        'region' => null,
-        'country' => null,
-        'postal_code' => null
+        'recordset_count' => null,
+        'next_link' => null,
+        'page_key' => null,
+        'items' => null
     ];
 
     /**
@@ -121,11 +119,10 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $attributeMap = [
-        'line1' => 'line1',
-        'city' => 'city',
-        'region' => 'region',
-        'country' => 'country',
-        'postal_code' => 'postalCode'
+        'recordset_count' => '@recordsetCount',
+        'next_link' => '@nextLink',
+        'page_key' => 'pageKey',
+        'items' => 'items'
     ];
 
     /**
@@ -134,11 +131,10 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $setters = [
-        'line1' => 'setLine1',
-        'city' => 'setCity',
-        'region' => 'setRegion',
-        'country' => 'setCountry',
-        'postal_code' => 'setPostalCode'
+        'recordset_count' => 'setRecordsetCount',
+        'next_link' => 'setNextLink',
+        'page_key' => 'setPageKey',
+        'items' => 'setItems'
     ];
 
     /**
@@ -147,11 +143,10 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $getters = [
-        'line1' => 'getLine1',
-        'city' => 'getCity',
-        'region' => 'getRegion',
-        'country' => 'getCountry',
-        'postal_code' => 'getPostalCode'
+        'recordset_count' => 'getRecordsetCount',
+        'next_link' => 'getNextLink',
+        'page_key' => 'getPageKey',
+        'items' => 'getItems'
     ];
 
     /**
@@ -195,21 +190,6 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
         return self::$openAPIModelName;
     }
 
-    const COUNTRY_US = 'US';
-    const COUNTRY_USA = 'USA';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getCountryAllowableValues()
-    {
-        return [
-            self::COUNTRY_US,
-            self::COUNTRY_USA,
-        ];
-    }
 
     /**
      * Associative array for storing property values
@@ -226,11 +206,10 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      */
     public function __construct(array $data = null)
     {
-        $this->container['line1'] = $data['line1'] ?? null;
-        $this->container['city'] = $data['city'] ?? null;
-        $this->container['region'] = $data['region'] ?? null;
-        $this->container['country'] = $data['country'] ?? null;
-        $this->container['postal_code'] = $data['postal_code'] ?? null;
+        $this->container['recordset_count'] = $data['recordset_count'] ?? null;
+        $this->container['next_link'] = $data['next_link'] ?? null;
+        $this->container['page_key'] = $data['page_key'] ?? null;
+        $this->container['items'] = $data['items'] ?? null;
     }
 
     /**
@@ -241,15 +220,6 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
     public function listInvalidProperties()
     {
         $invalidProperties = [];
-
-        $allowedValues = $this->getCountryAllowableValues();
-        if (!is_null($this->container['country']) && !in_array($this->container['country'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'country', must be one of '%s'",
-                $this->container['country'],
-                implode("', '", $allowedValues)
-            );
-        }
 
         return $invalidProperties;
     }
@@ -267,131 +237,97 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
 
 
     /**
-     * Gets line1
+     * Gets recordset_count
      *
-     * @return string|null
+     * @return int|null
      */
-    public function getLine1()
+    public function getRecordsetCount()
     {
-        return $this->container['line1'];
+        return $this->container['recordset_count'];
     }
 
     /**
-     * Sets line1
+     * Sets recordset_count
      *
-     * @param string|null $line1 line1
+     * @param int|null $recordset_count recordset_count
      *
      * @return self
      */
-    public function setLine1($line1)
+    public function setRecordsetCount($recordset_count)
     {
-        $this->container['line1'] = $line1;
+        $this->container['recordset_count'] = $recordset_count;
 
         return $this;
     }
 
     /**
-     * Gets city
+     * Gets next_link
      *
      * @return string|null
      */
-    public function getCity()
+    public function getNextLink()
     {
-        return $this->container['city'];
+        return $this->container['next_link'];
     }
 
     /**
-     * Sets city
+     * Sets next_link
      *
-     * @param string|null $city city
+     * @param string|null $next_link next_link
      *
      * @return self
      */
-    public function setCity($city)
+    public function setNextLink($next_link)
     {
-        $this->container['city'] = $city;
+        $this->container['next_link'] = $next_link;
 
         return $this;
     }
 
     /**
-     * Gets region
+     * Gets page_key
      *
      * @return string|null
      */
-    public function getRegion()
+    public function getPageKey()
     {
-        return $this->container['region'];
+        return $this->container['page_key'];
     }
 
     /**
-     * Sets region
+     * Sets page_key
      *
-     * @param string|null $region The state code of the address.
+     * @param string|null $page_key page_key
      *
      * @return self
      */
-    public function setRegion($region)
+    public function setPageKey($page_key)
     {
-        $this->container['region'] = $region;
+        $this->container['page_key'] = $page_key;
 
         return $this;
     }
 
     /**
-     * Gets country
+     * Gets items
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\IAMDS\Organization[]|null
      */
-    public function getCountry()
+    public function getItems()
     {
-        return $this->container['country'];
+        return $this->container['items'];
     }
 
     /**
-     * Sets country
+     * Sets items
      *
-     * @param string|null $country The country code of the address.
+     * @param \Avalara\SDK\Model\IAMDS\Organization[]|null $items items
      *
      * @return self
      */
-    public function setCountry($country)
+    public function setItems($items)
     {
-        $allowedValues = $this->getCountryAllowableValues();
-        if (!is_null($country) && !in_array($country, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'country', must be one of '%s'",
-                    $country,
-                    implode("', '", $allowedValues)
-                )
-            );
-        }
-        $this->container['country'] = $country;
-
-        return $this;
-    }
-
-    /**
-     * Gets postal_code
-     *
-     * @return string|null
-     */
-    public function getPostalCode()
-    {
-        return $this->container['postal_code'];
-    }
-
-    /**
-     * Sets postal_code
-     *
-     * @param string|null $postal_code postal_code
-     *
-     * @return self
-     */
-    public function setPostalCode($postal_code)
-    {
-        $this->container['postal_code'] = $postal_code;
+        $this->container['items'] = $items;
 
         return $this;
     }

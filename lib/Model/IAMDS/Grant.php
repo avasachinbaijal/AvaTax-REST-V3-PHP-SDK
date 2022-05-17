@@ -1,6 +1,6 @@
 <?php
 /**
- * ErrorDetailsErrorDetails
+ * Grant
  *
  * PHP version 7.3
  *
@@ -18,12 +18,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification for Beverage Alcohol
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API\Shipping
+ * @package    Avalara\SDK\API\IAMDS
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
@@ -39,16 +39,16 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model\Shipping;
+namespace Avalara\SDK\Model\IAMDS;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 use \Avalara\SDK\Model\ModelInterface;
 /**
- * ErrorDetailsErrorDetails Class Doc Comment
+ * Grant Class Doc Comment
  *
  * @category Class
- * @description Message Details Object
+ * @description Representation of a Grant
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -56,7 +56,7 @@ use \Avalara\SDK\Model\ModelInterface;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSerializable
+class Grant implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -65,7 +65,7 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
       *
       * @var string
       */
-    protected static $openAPIModelName = 'ErrorDetails_error_details';
+    protected static $openAPIModelName = 'Grant';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -73,13 +73,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
       * @var string[]
       */
     protected static $openAPITypes = [
-        'code' => 'string',
-        'message' => 'string',
-        'number' => 'int',
+        'display_name' => 'string',
         'description' => 'string',
-        'fault_code' => 'string',
-        'help_link' => 'string',
-        'severity' => 'string'
+        'system' => '\Avalara\SDK\Model\IAMDS\Reference',
+        'type' => 'string',
+        'role' => '\Avalara\SDK\Model\IAMDS\Reference',
+        'rules' => 'object[]',
+        'id' => 'string',
+        'meta' => '\Avalara\SDK\Model\IAMDS\InstanceMeta',
+        'aspects' => '\Avalara\SDK\Model\IAMDS\Aspect[]',
+        'tags' => '\Avalara\SDK\Model\IAMDS\Tag[]'
     ];
 
     /**
@@ -90,13 +93,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'code' => null,
-        'message' => null,
-        'number' => null,
+        'display_name' => null,
         'description' => null,
-        'fault_code' => null,
-        'help_link' => null,
-        'severity' => null
+        'system' => null,
+        'type' => null,
+        'role' => null,
+        'rules' => null,
+        'id' => null,
+        'meta' => null,
+        'aspects' => null,
+        'tags' => null
     ];
 
     /**
@@ -126,13 +132,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $attributeMap = [
-        'code' => 'code',
-        'message' => 'message',
-        'number' => 'number',
+        'display_name' => 'displayName',
         'description' => 'description',
-        'fault_code' => 'faultCode',
-        'help_link' => 'helpLink',
-        'severity' => 'severity'
+        'system' => 'system',
+        'type' => 'type',
+        'role' => 'role',
+        'rules' => 'rules',
+        'id' => 'id',
+        'meta' => 'meta',
+        'aspects' => 'aspects',
+        'tags' => 'tags'
     ];
 
     /**
@@ -141,13 +150,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $setters = [
-        'code' => 'setCode',
-        'message' => 'setMessage',
-        'number' => 'setNumber',
+        'display_name' => 'setDisplayName',
         'description' => 'setDescription',
-        'fault_code' => 'setFaultCode',
-        'help_link' => 'setHelpLink',
-        'severity' => 'setSeverity'
+        'system' => 'setSystem',
+        'type' => 'setType',
+        'role' => 'setRole',
+        'rules' => 'setRules',
+        'id' => 'setId',
+        'meta' => 'setMeta',
+        'aspects' => 'setAspects',
+        'tags' => 'setTags'
     ];
 
     /**
@@ -156,13 +168,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
      * @var string[]
      */
     protected static $getters = [
-        'code' => 'getCode',
-        'message' => 'getMessage',
-        'number' => 'getNumber',
+        'display_name' => 'getDisplayName',
         'description' => 'getDescription',
-        'fault_code' => 'getFaultCode',
-        'help_link' => 'getHelpLink',
-        'severity' => 'getSeverity'
+        'system' => 'getSystem',
+        'type' => 'getType',
+        'role' => 'getRole',
+        'rules' => 'getRules',
+        'id' => 'getId',
+        'meta' => 'getMeta',
+        'aspects' => 'getAspects',
+        'tags' => 'getTags'
     ];
 
     /**
@@ -206,38 +221,19 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
         return self::$openAPIModelName;
     }
 
-    const CODE_AUTHENTICATION_EXCEPTION = 'AuthenticationException';
-    const CODE_SUBSCRIPTION_REQUIRED = 'SubscriptionRequired';
-    const CODE_UNHANDLED_EXCEPTION = 'UnhandledException';
-    const CODE_INVALID_ADDRESS = 'InvalidAddress';
-    const CODE_ENTITY_NOT_FOUND_ERROR = 'EntityNotFoundError';
-    const SEVERITY_ERROR = 'Error';
+    const TYPE_SYSTEM = 'System';
+    const TYPE_CUSTOM = 'Custom';
 
     /**
      * Gets allowable values of the enum
      *
      * @return string[]
      */
-    public function getCodeAllowableValues()
+    public function getTypeAllowableValues()
     {
         return [
-            self::CODE_AUTHENTICATION_EXCEPTION,
-            self::CODE_SUBSCRIPTION_REQUIRED,
-            self::CODE_UNHANDLED_EXCEPTION,
-            self::CODE_INVALID_ADDRESS,
-            self::CODE_ENTITY_NOT_FOUND_ERROR,
-        ];
-    }
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getSeverityAllowableValues()
-    {
-        return [
-            self::SEVERITY_ERROR,
+            self::TYPE_SYSTEM,
+            self::TYPE_CUSTOM,
         ];
     }
 
@@ -256,13 +252,16 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
      */
     public function __construct(array $data = null)
     {
-        $this->container['code'] = $data['code'] ?? null;
-        $this->container['message'] = $data['message'] ?? null;
-        $this->container['number'] = $data['number'] ?? null;
+        $this->container['display_name'] = $data['display_name'] ?? null;
         $this->container['description'] = $data['description'] ?? null;
-        $this->container['fault_code'] = $data['fault_code'] ?? null;
-        $this->container['help_link'] = $data['help_link'] ?? null;
-        $this->container['severity'] = $data['severity'] ?? null;
+        $this->container['system'] = $data['system'] ?? null;
+        $this->container['type'] = $data['type'] ?? null;
+        $this->container['role'] = $data['role'] ?? null;
+        $this->container['rules'] = $data['rules'] ?? null;
+        $this->container['id'] = $data['id'] ?? null;
+        $this->container['meta'] = $data['meta'] ?? null;
+        $this->container['aspects'] = $data['aspects'] ?? null;
+        $this->container['tags'] = $data['tags'] ?? null;
     }
 
     /**
@@ -274,24 +273,30 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
     {
         $invalidProperties = [];
 
-        $allowedValues = $this->getCodeAllowableValues();
-        if (!is_null($this->container['code']) && !in_array($this->container['code'], $allowedValues, true)) {
+        if ($this->container['display_name'] === null) {
+            $invalidProperties[] = "'display_name' can't be null";
+        }
+        if ($this->container['system'] === null) {
+            $invalidProperties[] = "'system' can't be null";
+        }
+        if ($this->container['type'] === null) {
+            $invalidProperties[] = "'type' can't be null";
+        }
+        $allowedValues = $this->getTypeAllowableValues();
+        if (!is_null($this->container['type']) && !in_array($this->container['type'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'code', must be one of '%s'",
-                $this->container['code'],
+                "invalid value '%s' for 'type', must be one of '%s'",
+                $this->container['type'],
                 implode("', '", $allowedValues)
             );
         }
 
-        $allowedValues = $this->getSeverityAllowableValues();
-        if (!is_null($this->container['severity']) && !in_array($this->container['severity'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'severity', must be one of '%s'",
-                $this->container['severity'],
-                implode("', '", $allowedValues)
-            );
+        if ($this->container['role'] === null) {
+            $invalidProperties[] = "'role' can't be null";
         }
-
+        if ($this->container['id'] === null) {
+            $invalidProperties[] = "'id' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -308,83 +313,25 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
 
 
     /**
-     * Gets code
+     * Gets display_name
      *
-     * @return string|null
+     * @return string
      */
-    public function getCode()
+    public function getDisplayName()
     {
-        return $this->container['code'];
+        return $this->container['display_name'];
     }
 
     /**
-     * Sets code
+     * Sets display_name
      *
-     * @param string|null $code Name of the error or message.
+     * @param string $display_name Name of the Grant
      *
      * @return self
      */
-    public function setCode($code)
+    public function setDisplayName($display_name)
     {
-        $allowedValues = $this->getCodeAllowableValues();
-        if (!is_null($code) && !in_array($code, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'code', must be one of '%s'",
-                    $code,
-                    implode("', '", $allowedValues)
-                )
-            );
-        }
-        $this->container['code'] = $code;
-
-        return $this;
-    }
-
-    /**
-     * Gets message
-     *
-     * @return string|null
-     */
-    public function getMessage()
-    {
-        return $this->container['message'];
-    }
-
-    /**
-     * Sets message
-     *
-     * @param string|null $message Concise summary of the message, suitable for display in the caption of an alert box.
-     *
-     * @return self
-     */
-    public function setMessage($message)
-    {
-        $this->container['message'] = $message;
-
-        return $this;
-    }
-
-    /**
-     * Gets number
-     *
-     * @return int|null
-     */
-    public function getNumber()
-    {
-        return $this->container['number'];
-    }
-
-    /**
-     * Sets number
-     *
-     * @param int|null $number Unique ID number referring to this error or message.
-     *
-     * @return self
-     */
-    public function setNumber($number)
-    {
-        $this->container['number'] = $number;
+        $this->container['display_name'] = $display_name;
 
         return $this;
     }
@@ -402,7 +349,7 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
     /**
      * Sets description
      *
-     * @param string|null $description A more detailed description of the problem referenced by this error message, suitable for display in the contents area of an alert box.
+     * @param string|null $description Description of the grant, used for display purposes
      *
      * @return self
      */
@@ -414,83 +361,203 @@ class ErrorDetailsErrorDetails implements ModelInterface, ArrayAccess, \JsonSeri
     }
 
     /**
-     * Gets fault_code
+     * Gets system
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\IAMDS\Reference
      */
-    public function getFaultCode()
+    public function getSystem()
     {
-        return $this->container['fault_code'];
+        return $this->container['system'];
     }
 
     /**
-     * Sets fault_code
+     * Sets system
      *
-     * @param string|null $fault_code Indicates the SOAP Fault code, if this was related to an error that corresponded to AvaTax SOAP v1 behavior.
+     * @param \Avalara\SDK\Model\IAMDS\Reference $system system
      *
      * @return self
      */
-    public function setFaultCode($fault_code)
+    public function setSystem($system)
     {
-        $this->container['fault_code'] = $fault_code;
+        $this->container['system'] = $system;
 
         return $this;
     }
 
     /**
-     * Gets help_link
+     * Gets type
      *
-     * @return string|null
+     * @return string
      */
-    public function getHelpLink()
+    public function getType()
     {
-        return $this->container['help_link'];
+        return $this->container['type'];
     }
 
     /**
-     * Sets help_link
+     * Sets type
      *
-     * @param string|null $help_link URL to help for this message
+     * @param string $type Determines the grant ownership
      *
      * @return self
      */
-    public function setHelpLink($help_link)
+    public function setType($type)
     {
-        $this->container['help_link'] = $help_link;
-
-        return $this;
-    }
-
-    /**
-     * Gets severity
-     *
-     * @return string|null
-     */
-    public function getSeverity()
-    {
-        return $this->container['severity'];
-    }
-
-    /**
-     * Sets severity
-     *
-     * @param string|null $severity Severity of the message
-     *
-     * @return self
-     */
-    public function setSeverity($severity)
-    {
-        $allowedValues = $this->getSeverityAllowableValues();
-        if (!is_null($severity) && !in_array($severity, $allowedValues, true)) {
+        $allowedValues = $this->getTypeAllowableValues();
+        if (!in_array($type, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'severity', must be one of '%s'",
-                    $severity,
+                    "Invalid value '%s' for 'type', must be one of '%s'",
+                    $type,
                     implode("', '", $allowedValues)
                 )
             );
         }
-        $this->container['severity'] = $severity;
+        $this->container['type'] = $type;
+
+        return $this;
+    }
+
+    /**
+     * Gets role
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Reference
+     */
+    public function getRole()
+    {
+        return $this->container['role'];
+    }
+
+    /**
+     * Sets role
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Reference $role role
+     *
+     * @return self
+     */
+    public function setRole($role)
+    {
+        $this->container['role'] = $role;
+
+        return $this;
+    }
+
+    /**
+     * Gets rules
+     *
+     * @return object[]|null
+     */
+    public function getRules()
+    {
+        return $this->container['rules'];
+    }
+
+    /**
+     * Sets rules
+     *
+     * @param object[]|null $rules Defines the conditions associated with permissions in the role
+     *
+     * @return self
+     */
+    public function setRules($rules)
+    {
+        $this->container['rules'] = $rules;
+
+        return $this;
+    }
+
+    /**
+     * Gets id
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->container['id'];
+    }
+
+    /**
+     * Sets id
+     *
+     * @param string $id Unique identifier for the Object
+     *
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->container['id'] = $id;
+
+        return $this;
+    }
+
+    /**
+     * Gets meta
+     *
+     * @return \Avalara\SDK\Model\IAMDS\InstanceMeta|null
+     */
+    public function getMeta()
+    {
+        return $this->container['meta'];
+    }
+
+    /**
+     * Sets meta
+     *
+     * @param \Avalara\SDK\Model\IAMDS\InstanceMeta|null $meta meta
+     *
+     * @return self
+     */
+    public function setMeta($meta)
+    {
+        $this->container['meta'] = $meta;
+
+        return $this;
+    }
+
+    /**
+     * Gets aspects
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Aspect[]|null
+     */
+    public function getAspects()
+    {
+        return $this->container['aspects'];
+    }
+
+    /**
+     * Sets aspects
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Aspect[]|null $aspects Identifier of the Resource (if any) in other systems
+     *
+     * @return self
+     */
+    public function setAspects($aspects)
+    {
+        $this->container['aspects'] = $aspects;
+
+        return $this;
+    }
+
+    /**
+     * Gets tags
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Tag[]|null
+     */
+    public function getTags()
+    {
+        return $this->container['tags'];
+    }
+
+    /**
+     * Sets tags
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Tag[]|null $tags User defined tags in the form of key:value pair
+     *
+     * @return self
+     */
+    public function setTags($tags)
+    {
+        $this->container['tags'] = $tags;
 
         return $this;
     }
