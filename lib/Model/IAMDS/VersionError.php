@@ -1,6 +1,6 @@
 <?php
 /**
- * AgeVerifyFailureCode
+ * VersionError
  *
  * PHP version 7.3
  *
@@ -18,12 +18,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API\AgeVerification
+ * @package    Avalara\SDK\API\IAMDS
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
@@ -39,33 +39,27 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model\AgeVerification;
+namespace Avalara\SDK\Model\IAMDS;
 use \Avalara\SDK\ObjectSerializer;
 use \Avalara\SDK\Model\ModelInterface;
 /**
- * AgeVerifyFailureCode Class Doc Comment
+ * VersionError Class Doc Comment
  *
  * @category Class
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
-class AgeVerifyFailureCode
+class VersionError
 {
     /**
      * Possible values of this enum
      */
-    const NOT_FOUND = 'not_found';
+    const TOO_NEW = 'version-too-new';
 
-    const DOB_UNVERIFIABLE = 'dob_unverifiable';
+    const TOO_OLD = 'version-too-old';
 
-    const UNDER_AGE = 'under_age';
-
-    const SUSPECTED_FRAUD = 'suspected_fraud';
-
-    const DECEASED = 'deceased';
-
-    const UNKNOWN_ERROR = 'unknown_error';
+    const NOT_VALID = 'version-not-valid';
 
     /**
      * Gets allowable values of the enum
@@ -74,12 +68,9 @@ class AgeVerifyFailureCode
     public static function getAllowableEnumValues()
     {
         return [
-            self::NOT_FOUND,
-            self::DOB_UNVERIFIABLE,
-            self::UNDER_AGE,
-            self::SUSPECTED_FRAUD,
-            self::DECEASED,
-            self::UNKNOWN_ERROR
+            self::TOO_NEW,
+            self::TOO_OLD,
+            self::NOT_VALID
         ];
     }
 }

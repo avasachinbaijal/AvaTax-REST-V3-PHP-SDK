@@ -1,6 +1,6 @@
 <?php
 /**
- * AgeVerifyRequestAddress
+ * Group
  *
  * PHP version 7.3
  *
@@ -18,12 +18,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API\AgeVerification
+ * @package    Avalara\SDK\API\IAMDS
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
@@ -39,15 +39,16 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model\AgeVerification;
+namespace Avalara\SDK\Model\IAMDS;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 use \Avalara\SDK\Model\ModelInterface;
 /**
- * AgeVerifyRequestAddress Class Doc Comment
+ * Group Class Doc Comment
  *
  * @category Class
+ * @description Representation of a Group that can contain other principals
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -55,7 +56,7 @@ use \Avalara\SDK\Model\ModelInterface;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSerializable
+class Group implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -64,7 +65,7 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       *
       * @var string
       */
-    protected static $openAPIModelName = 'AgeVerifyRequest_address';
+    protected static $openAPIModelName = 'Group';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -72,11 +73,15 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       * @var string[]
       */
     protected static $openAPITypes = [
-        'line1' => 'string',
-        'city' => 'string',
-        'region' => 'string',
-        'country' => 'string',
-        'postal_code' => 'string'
+        'external_id' => 'string',
+        'display_name' => 'string',
+        'tenant' => '\Avalara\SDK\Model\IAMDS\Reference',
+        'members' => 'object[]',
+        'grants' => '\Avalara\SDK\Model\IAMDS\Reference[]',
+        'id' => 'string',
+        'meta' => '\Avalara\SDK\Model\IAMDS\InstanceMeta',
+        'aspects' => '\Avalara\SDK\Model\IAMDS\Aspect[]',
+        'tags' => '\Avalara\SDK\Model\IAMDS\Tag[]'
     ];
 
     /**
@@ -87,11 +92,15 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'line1' => null,
-        'city' => null,
-        'region' => null,
-        'country' => null,
-        'postal_code' => null
+        'external_id' => null,
+        'display_name' => null,
+        'tenant' => null,
+        'members' => null,
+        'grants' => null,
+        'id' => null,
+        'meta' => null,
+        'aspects' => null,
+        'tags' => null
     ];
 
     /**
@@ -121,11 +130,15 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $attributeMap = [
-        'line1' => 'line1',
-        'city' => 'city',
-        'region' => 'region',
-        'country' => 'country',
-        'postal_code' => 'postalCode'
+        'external_id' => 'externalId',
+        'display_name' => 'displayName',
+        'tenant' => 'tenant',
+        'members' => 'members',
+        'grants' => 'grants',
+        'id' => 'id',
+        'meta' => 'meta',
+        'aspects' => 'aspects',
+        'tags' => 'tags'
     ];
 
     /**
@@ -134,11 +147,15 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $setters = [
-        'line1' => 'setLine1',
-        'city' => 'setCity',
-        'region' => 'setRegion',
-        'country' => 'setCountry',
-        'postal_code' => 'setPostalCode'
+        'external_id' => 'setExternalId',
+        'display_name' => 'setDisplayName',
+        'tenant' => 'setTenant',
+        'members' => 'setMembers',
+        'grants' => 'setGrants',
+        'id' => 'setId',
+        'meta' => 'setMeta',
+        'aspects' => 'setAspects',
+        'tags' => 'setTags'
     ];
 
     /**
@@ -147,11 +164,15 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $getters = [
-        'line1' => 'getLine1',
-        'city' => 'getCity',
-        'region' => 'getRegion',
-        'country' => 'getCountry',
-        'postal_code' => 'getPostalCode'
+        'external_id' => 'getExternalId',
+        'display_name' => 'getDisplayName',
+        'tenant' => 'getTenant',
+        'members' => 'getMembers',
+        'grants' => 'getGrants',
+        'id' => 'getId',
+        'meta' => 'getMeta',
+        'aspects' => 'getAspects',
+        'tags' => 'getTags'
     ];
 
     /**
@@ -195,21 +216,6 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
         return self::$openAPIModelName;
     }
 
-    const COUNTRY_US = 'US';
-    const COUNTRY_USA = 'USA';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getCountryAllowableValues()
-    {
-        return [
-            self::COUNTRY_US,
-            self::COUNTRY_USA,
-        ];
-    }
 
     /**
      * Associative array for storing property values
@@ -226,11 +232,15 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      */
     public function __construct(array $data = null)
     {
-        $this->container['line1'] = $data['line1'] ?? null;
-        $this->container['city'] = $data['city'] ?? null;
-        $this->container['region'] = $data['region'] ?? null;
-        $this->container['country'] = $data['country'] ?? null;
-        $this->container['postal_code'] = $data['postal_code'] ?? null;
+        $this->container['external_id'] = $data['external_id'] ?? null;
+        $this->container['display_name'] = $data['display_name'] ?? null;
+        $this->container['tenant'] = $data['tenant'] ?? null;
+        $this->container['members'] = $data['members'] ?? null;
+        $this->container['grants'] = $data['grants'] ?? null;
+        $this->container['id'] = $data['id'] ?? null;
+        $this->container['meta'] = $data['meta'] ?? null;
+        $this->container['aspects'] = $data['aspects'] ?? null;
+        $this->container['tags'] = $data['tags'] ?? null;
     }
 
     /**
@@ -242,15 +252,15 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
     {
         $invalidProperties = [];
 
-        $allowedValues = $this->getCountryAllowableValues();
-        if (!is_null($this->container['country']) && !in_array($this->container['country'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'country', must be one of '%s'",
-                $this->container['country'],
-                implode("', '", $allowedValues)
-            );
+        if ($this->container['display_name'] === null) {
+            $invalidProperties[] = "'display_name' can't be null";
         }
-
+        if ($this->container['tenant'] === null) {
+            $invalidProperties[] = "'tenant' can't be null";
+        }
+        if ($this->container['id'] === null) {
+            $invalidProperties[] = "'id' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -267,131 +277,217 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
 
 
     /**
-     * Gets line1
+     * Gets external_id
      *
      * @return string|null
      */
-    public function getLine1()
+    public function getExternalId()
     {
-        return $this->container['line1'];
+        return $this->container['external_id'];
     }
 
     /**
-     * Sets line1
+     * Sets external_id
      *
-     * @param string|null $line1 line1
+     * @param string|null $external_id Identifier for the group in external systems (clients). The external systems manage this
      *
      * @return self
      */
-    public function setLine1($line1)
+    public function setExternalId($external_id)
     {
-        $this->container['line1'] = $line1;
+        $this->container['external_id'] = $external_id;
 
         return $this;
     }
 
     /**
-     * Gets city
+     * Gets display_name
      *
-     * @return string|null
+     * @return string
      */
-    public function getCity()
+    public function getDisplayName()
     {
-        return $this->container['city'];
+        return $this->container['display_name'];
     }
 
     /**
-     * Sets city
+     * Sets display_name
      *
-     * @param string|null $city city
+     * @param string $display_name Name of the group, unique within the Tenant
      *
      * @return self
      */
-    public function setCity($city)
+    public function setDisplayName($display_name)
     {
-        $this->container['city'] = $city;
+        $this->container['display_name'] = $display_name;
 
         return $this;
     }
 
     /**
-     * Gets region
+     * Gets tenant
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\IAMDS\Reference
      */
-    public function getRegion()
+    public function getTenant()
     {
-        return $this->container['region'];
+        return $this->container['tenant'];
     }
 
     /**
-     * Sets region
+     * Sets tenant
      *
-     * @param string|null $region The state code of the address.
+     * @param \Avalara\SDK\Model\IAMDS\Reference $tenant tenant
      *
      * @return self
      */
-    public function setRegion($region)
+    public function setTenant($tenant)
     {
-        $this->container['region'] = $region;
+        $this->container['tenant'] = $tenant;
 
         return $this;
     }
 
     /**
-     * Gets country
+     * Gets members
      *
-     * @return string|null
+     * @return object[]|null
      */
-    public function getCountry()
+    public function getMembers()
     {
-        return $this->container['country'];
+        return $this->container['members'];
     }
 
     /**
-     * Sets country
+     * Sets members
      *
-     * @param string|null $country The country code of the address.
+     * @param object[]|null $members List of members belonging to the group
      *
      * @return self
      */
-    public function setCountry($country)
+    public function setMembers($members)
     {
-        $allowedValues = $this->getCountryAllowableValues();
-        if (!is_null($country) && !in_array($country, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'country', must be one of '%s'",
-                    $country,
-                    implode("', '", $allowedValues)
-                )
-            );
-        }
-        $this->container['country'] = $country;
+        $this->container['members'] = $members;
 
         return $this;
     }
 
     /**
-     * Gets postal_code
+     * Gets grants
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\IAMDS\Reference[]|null
      */
-    public function getPostalCode()
+    public function getGrants()
     {
-        return $this->container['postal_code'];
+        return $this->container['grants'];
     }
 
     /**
-     * Sets postal_code
+     * Sets grants
      *
-     * @param string|null $postal_code postal_code
+     * @param \Avalara\SDK\Model\IAMDS\Reference[]|null $grants List of grants assigned to the Group
      *
      * @return self
      */
-    public function setPostalCode($postal_code)
+    public function setGrants($grants)
     {
-        $this->container['postal_code'] = $postal_code;
+        $this->container['grants'] = $grants;
+
+        return $this;
+    }
+
+    /**
+     * Gets id
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->container['id'];
+    }
+
+    /**
+     * Sets id
+     *
+     * @param string $id Unique identifier for the Object
+     *
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->container['id'] = $id;
+
+        return $this;
+    }
+
+    /**
+     * Gets meta
+     *
+     * @return \Avalara\SDK\Model\IAMDS\InstanceMeta|null
+     */
+    public function getMeta()
+    {
+        return $this->container['meta'];
+    }
+
+    /**
+     * Sets meta
+     *
+     * @param \Avalara\SDK\Model\IAMDS\InstanceMeta|null $meta meta
+     *
+     * @return self
+     */
+    public function setMeta($meta)
+    {
+        $this->container['meta'] = $meta;
+
+        return $this;
+    }
+
+    /**
+     * Gets aspects
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Aspect[]|null
+     */
+    public function getAspects()
+    {
+        return $this->container['aspects'];
+    }
+
+    /**
+     * Sets aspects
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Aspect[]|null $aspects Identifier of the Resource (if any) in other systems
+     *
+     * @return self
+     */
+    public function setAspects($aspects)
+    {
+        $this->container['aspects'] = $aspects;
+
+        return $this;
+    }
+
+    /**
+     * Gets tags
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Tag[]|null
+     */
+    public function getTags()
+    {
+        return $this->container['tags'];
+    }
+
+    /**
+     * Sets tags
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Tag[]|null $tags User defined tags in the form of key:value pair
+     *
+     * @return self
+     */
+    public function setTags($tags)
+    {
+        $this->container['tags'] = $tags;
 
         return $this;
     }

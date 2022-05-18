@@ -1,6 +1,6 @@
 <?php
 /**
- * AgeVerifyRequestAddress
+ * ContactPhoneNumbers
  *
  * PHP version 7.3
  *
@@ -18,12 +18,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API\AgeVerification
+ * @package    Avalara\SDK\API\IAMDS
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
@@ -39,13 +39,13 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model\AgeVerification;
+namespace Avalara\SDK\Model\IAMDS;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 use \Avalara\SDK\Model\ModelInterface;
 /**
- * AgeVerifyRequestAddress Class Doc Comment
+ * ContactPhoneNumbers Class Doc Comment
  *
  * @category Class
  * @package  Avalara\SDK
@@ -55,7 +55,7 @@ use \Avalara\SDK\Model\ModelInterface;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSerializable
+class ContactPhoneNumbers implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -64,7 +64,7 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       *
       * @var string
       */
-    protected static $openAPIModelName = 'AgeVerifyRequest_address';
+    protected static $openAPIModelName = 'Contact_phoneNumbers';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -72,11 +72,9 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       * @var string[]
       */
     protected static $openAPITypes = [
-        'line1' => 'string',
-        'city' => 'string',
-        'region' => 'string',
-        'country' => 'string',
-        'postal_code' => 'string'
+        'number' => 'string',
+        'phone_type' => 'string',
+        'is_primary' => 'bool'
     ];
 
     /**
@@ -87,11 +85,9 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'line1' => null,
-        'city' => null,
-        'region' => null,
-        'country' => null,
-        'postal_code' => null
+        'number' => null,
+        'phone_type' => null,
+        'is_primary' => null
     ];
 
     /**
@@ -121,11 +117,9 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $attributeMap = [
-        'line1' => 'line1',
-        'city' => 'city',
-        'region' => 'region',
-        'country' => 'country',
-        'postal_code' => 'postalCode'
+        'number' => 'number',
+        'phone_type' => 'phoneType',
+        'is_primary' => 'isPrimary'
     ];
 
     /**
@@ -134,11 +128,9 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $setters = [
-        'line1' => 'setLine1',
-        'city' => 'setCity',
-        'region' => 'setRegion',
-        'country' => 'setCountry',
-        'postal_code' => 'setPostalCode'
+        'number' => 'setNumber',
+        'phone_type' => 'setPhoneType',
+        'is_primary' => 'setIsPrimary'
     ];
 
     /**
@@ -147,11 +139,9 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $getters = [
-        'line1' => 'getLine1',
-        'city' => 'getCity',
-        'region' => 'getRegion',
-        'country' => 'getCountry',
-        'postal_code' => 'getPostalCode'
+        'number' => 'getNumber',
+        'phone_type' => 'getPhoneType',
+        'is_primary' => 'getIsPrimary'
     ];
 
     /**
@@ -195,19 +185,25 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
         return self::$openAPIModelName;
     }
 
-    const COUNTRY_US = 'US';
-    const COUNTRY_USA = 'USA';
+    const PHONE_TYPE_WORK = 'work';
+    const PHONE_TYPE_HOME = 'home';
+    const PHONE_TYPE_MOBILE = 'mobile';
+    const PHONE_TYPE_FAX = 'fax';
+    const PHONE_TYPE_OTHER = 'other';
 
     /**
      * Gets allowable values of the enum
      *
      * @return string[]
      */
-    public function getCountryAllowableValues()
+    public function getPhoneTypeAllowableValues()
     {
         return [
-            self::COUNTRY_US,
-            self::COUNTRY_USA,
+            self::PHONE_TYPE_WORK,
+            self::PHONE_TYPE_HOME,
+            self::PHONE_TYPE_MOBILE,
+            self::PHONE_TYPE_FAX,
+            self::PHONE_TYPE_OTHER,
         ];
     }
 
@@ -226,11 +222,9 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      */
     public function __construct(array $data = null)
     {
-        $this->container['line1'] = $data['line1'] ?? null;
-        $this->container['city'] = $data['city'] ?? null;
-        $this->container['region'] = $data['region'] ?? null;
-        $this->container['country'] = $data['country'] ?? null;
-        $this->container['postal_code'] = $data['postal_code'] ?? null;
+        $this->container['number'] = $data['number'] ?? null;
+        $this->container['phone_type'] = $data['phone_type'] ?? null;
+        $this->container['is_primary'] = $data['is_primary'] ?? null;
     }
 
     /**
@@ -242,11 +236,11 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
     {
         $invalidProperties = [];
 
-        $allowedValues = $this->getCountryAllowableValues();
-        if (!is_null($this->container['country']) && !in_array($this->container['country'], $allowedValues, true)) {
+        $allowedValues = $this->getPhoneTypeAllowableValues();
+        if (!is_null($this->container['phone_type']) && !in_array($this->container['phone_type'], $allowedValues, true)) {
             $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'country', must be one of '%s'",
-                $this->container['country'],
+                "invalid value '%s' for 'phone_type', must be one of '%s'",
+                $this->container['phone_type'],
                 implode("', '", $allowedValues)
             );
         }
@@ -267,131 +261,83 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
 
 
     /**
-     * Gets line1
+     * Gets number
      *
      * @return string|null
      */
-    public function getLine1()
+    public function getNumber()
     {
-        return $this->container['line1'];
+        return $this->container['number'];
     }
 
     /**
-     * Sets line1
+     * Sets number
      *
-     * @param string|null $line1 line1
+     * @param string|null $number Phone number of the contact
      *
      * @return self
      */
-    public function setLine1($line1)
+    public function setNumber($number)
     {
-        $this->container['line1'] = $line1;
+        $this->container['number'] = $number;
 
         return $this;
     }
 
     /**
-     * Gets city
+     * Gets phone_type
      *
      * @return string|null
      */
-    public function getCity()
+    public function getPhoneType()
     {
-        return $this->container['city'];
+        return $this->container['phone_type'];
     }
 
     /**
-     * Sets city
+     * Sets phone_type
      *
-     * @param string|null $city city
+     * @param string|null $phone_type Type of phone number
      *
      * @return self
      */
-    public function setCity($city)
+    public function setPhoneType($phone_type)
     {
-        $this->container['city'] = $city;
-
-        return $this;
-    }
-
-    /**
-     * Gets region
-     *
-     * @return string|null
-     */
-    public function getRegion()
-    {
-        return $this->container['region'];
-    }
-
-    /**
-     * Sets region
-     *
-     * @param string|null $region The state code of the address.
-     *
-     * @return self
-     */
-    public function setRegion($region)
-    {
-        $this->container['region'] = $region;
-
-        return $this;
-    }
-
-    /**
-     * Gets country
-     *
-     * @return string|null
-     */
-    public function getCountry()
-    {
-        return $this->container['country'];
-    }
-
-    /**
-     * Sets country
-     *
-     * @param string|null $country The country code of the address.
-     *
-     * @return self
-     */
-    public function setCountry($country)
-    {
-        $allowedValues = $this->getCountryAllowableValues();
-        if (!is_null($country) && !in_array($country, $allowedValues, true)) {
+        $allowedValues = $this->getPhoneTypeAllowableValues();
+        if (!is_null($phone_type) && !in_array($phone_type, $allowedValues, true)) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    "Invalid value '%s' for 'country', must be one of '%s'",
-                    $country,
+                    "Invalid value '%s' for 'phone_type', must be one of '%s'",
+                    $phone_type,
                     implode("', '", $allowedValues)
                 )
             );
         }
-        $this->container['country'] = $country;
+        $this->container['phone_type'] = $phone_type;
 
         return $this;
     }
 
     /**
-     * Gets postal_code
+     * Gets is_primary
      *
-     * @return string|null
+     * @return bool|null
      */
-    public function getPostalCode()
+    public function getIsPrimary()
     {
-        return $this->container['postal_code'];
+        return $this->container['is_primary'];
     }
 
     /**
-     * Sets postal_code
+     * Sets is_primary
      *
-     * @param string|null $postal_code postal_code
+     * @param bool|null $is_primary Is this the primary phone number for the contact
      *
      * @return self
      */
-    public function setPostalCode($postal_code)
+    public function setIsPrimary($is_primary)
     {
-        $this->container['postal_code'] = $postal_code;
+        $this->container['is_primary'] = $is_primary;
 
         return $this;
     }

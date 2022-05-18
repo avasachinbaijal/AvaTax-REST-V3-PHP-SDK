@@ -5,7 +5,7 @@
  * PHP version 7.3
  *
  * @category Class
- * @package  Avalara\SDK\Model\AgeVerification
+ * @package  Avalara\SDK\Model\IAMDS
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
  */
@@ -18,12 +18,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API\AgeVerification
+ * @package    Avalara\SDK\API\IAMDS
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
@@ -39,12 +39,12 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model\AgeVerification;
+namespace Avalara\SDK\Model\IAMDS;
 
 /**
  * Interface abstracting model access.
  *
- * @package Avalara\SDK\Model\AgeVerification
+ * @package Avalara\SDK\Model\IAMDS
  * @author  OpenAPI Generator team
  */
 interface ModelInterface
