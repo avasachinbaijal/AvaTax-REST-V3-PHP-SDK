@@ -1,6 +1,6 @@
 <?php
 /**
- * AgeVerifyRequestAddress
+ * Organization
  *
  * PHP version 7.3
  *
@@ -18,12 +18,12 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Avalara Shipping Verification only
+ * foundation
  *
- * API for evaluating transactions against direct-to-consumer Beverage Alcohol shipping regulations.  This API is currently in beta.
+ * Platform foundation consists of services on top of which the Avalara Compliance Cloud platform is built. These services are foundational and provide functionality such as common organization, tenant and user management for the rest of the compliance platform.
  *
  * @category   Avalara client libraries
- * @package    Avalara\SDK\API\AgeVerification
+ * @package    Avalara\SDK\API\IAMDS
  * @author     Sachin Baijal <sachin.baijal@avalara.com>
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
@@ -39,15 +39,16 @@
  * Do not edit the class manually.
  */
 
-namespace Avalara\SDK\Model\AgeVerification;
+namespace Avalara\SDK\Model\IAMDS;
 
 use \ArrayAccess;
 use \Avalara\SDK\ObjectSerializer;
 use \Avalara\SDK\Model\ModelInterface;
 /**
- * AgeVerifyRequestAddress Class Doc Comment
+ * Organization Class Doc Comment
  *
  * @category Class
+ * @description An IAM Organization defines a logical context in which Users and Tenants are managed
  * @package  Avalara\SDK
  * @author   OpenAPI Generator team
  * @link     https://openapi-generator.tech
@@ -55,7 +56,7 @@ use \Avalara\SDK\Model\ModelInterface;
  * @template TKey int|null
  * @template TValue mixed|null
  */
-class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSerializable
+class Organization implements ModelInterface, ArrayAccess, \JsonSerializable
 {
     public const DISCRIMINATOR = null;
 
@@ -64,7 +65,7 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       *
       * @var string
       */
-    protected static $openAPIModelName = 'AgeVerifyRequest_address';
+    protected static $openAPIModelName = 'Organization';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -72,11 +73,13 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       * @var string[]
       */
     protected static $openAPITypes = [
-        'line1' => 'string',
-        'city' => 'string',
-        'region' => 'string',
-        'country' => 'string',
-        'postal_code' => 'string'
+        'display_name' => 'string',
+        'contacts' => '\Avalara\SDK\Model\IAMDS\Contact[]',
+        'address' => 'object',
+        'id' => 'string',
+        'meta' => '\Avalara\SDK\Model\IAMDS\InstanceMeta',
+        'aspects' => '\Avalara\SDK\Model\IAMDS\Aspect[]',
+        'tags' => '\Avalara\SDK\Model\IAMDS\Tag[]'
     ];
 
     /**
@@ -87,11 +90,13 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'line1' => null,
-        'city' => null,
-        'region' => null,
-        'country' => null,
-        'postal_code' => null
+        'display_name' => null,
+        'contacts' => null,
+        'address' => null,
+        'id' => null,
+        'meta' => null,
+        'aspects' => null,
+        'tags' => null
     ];
 
     /**
@@ -121,11 +126,13 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $attributeMap = [
-        'line1' => 'line1',
-        'city' => 'city',
-        'region' => 'region',
-        'country' => 'country',
-        'postal_code' => 'postalCode'
+        'display_name' => 'displayName',
+        'contacts' => 'contacts',
+        'address' => 'address',
+        'id' => 'id',
+        'meta' => 'meta',
+        'aspects' => 'aspects',
+        'tags' => 'tags'
     ];
 
     /**
@@ -134,11 +141,13 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $setters = [
-        'line1' => 'setLine1',
-        'city' => 'setCity',
-        'region' => 'setRegion',
-        'country' => 'setCountry',
-        'postal_code' => 'setPostalCode'
+        'display_name' => 'setDisplayName',
+        'contacts' => 'setContacts',
+        'address' => 'setAddress',
+        'id' => 'setId',
+        'meta' => 'setMeta',
+        'aspects' => 'setAspects',
+        'tags' => 'setTags'
     ];
 
     /**
@@ -147,11 +156,13 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      * @var string[]
      */
     protected static $getters = [
-        'line1' => 'getLine1',
-        'city' => 'getCity',
-        'region' => 'getRegion',
-        'country' => 'getCountry',
-        'postal_code' => 'getPostalCode'
+        'display_name' => 'getDisplayName',
+        'contacts' => 'getContacts',
+        'address' => 'getAddress',
+        'id' => 'getId',
+        'meta' => 'getMeta',
+        'aspects' => 'getAspects',
+        'tags' => 'getTags'
     ];
 
     /**
@@ -195,21 +206,6 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
         return self::$openAPIModelName;
     }
 
-    const COUNTRY_US = 'US';
-    const COUNTRY_USA = 'USA';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getCountryAllowableValues()
-    {
-        return [
-            self::COUNTRY_US,
-            self::COUNTRY_USA,
-        ];
-    }
 
     /**
      * Associative array for storing property values
@@ -226,11 +222,13 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
      */
     public function __construct(array $data = null)
     {
-        $this->container['line1'] = $data['line1'] ?? null;
-        $this->container['city'] = $data['city'] ?? null;
-        $this->container['region'] = $data['region'] ?? null;
-        $this->container['country'] = $data['country'] ?? null;
-        $this->container['postal_code'] = $data['postal_code'] ?? null;
+        $this->container['display_name'] = $data['display_name'] ?? null;
+        $this->container['contacts'] = $data['contacts'] ?? null;
+        $this->container['address'] = $data['address'] ?? null;
+        $this->container['id'] = $data['id'] ?? null;
+        $this->container['meta'] = $data['meta'] ?? null;
+        $this->container['aspects'] = $data['aspects'] ?? null;
+        $this->container['tags'] = $data['tags'] ?? null;
     }
 
     /**
@@ -242,15 +240,13 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
     {
         $invalidProperties = [];
 
-        $allowedValues = $this->getCountryAllowableValues();
-        if (!is_null($this->container['country']) && !in_array($this->container['country'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'country', must be one of '%s'",
-                $this->container['country'],
-                implode("', '", $allowedValues)
-            );
+        if (!is_null($this->container['contacts']) && (count($this->container['contacts']) < 1)) {
+            $invalidProperties[] = "invalid value for 'contacts', number of items must be greater than or equal to 1.";
         }
 
+        if ($this->container['id'] === null) {
+            $invalidProperties[] = "'id' can't be null";
+        }
         return $invalidProperties;
     }
 
@@ -267,131 +263,174 @@ class AgeVerifyRequestAddress implements ModelInterface, ArrayAccess, \JsonSeria
 
 
     /**
-     * Gets line1
+     * Gets display_name
      *
      * @return string|null
      */
-    public function getLine1()
+    public function getDisplayName()
     {
-        return $this->container['line1'];
+        return $this->container['display_name'];
     }
 
     /**
-     * Sets line1
+     * Sets display_name
      *
-     * @param string|null $line1 line1
+     * @param string|null $display_name Human-readable name of the Organization
      *
      * @return self
      */
-    public function setLine1($line1)
+    public function setDisplayName($display_name)
     {
-        $this->container['line1'] = $line1;
+        $this->container['display_name'] = $display_name;
 
         return $this;
     }
 
     /**
-     * Gets city
+     * Gets contacts
      *
-     * @return string|null
+     * @return \Avalara\SDK\Model\IAMDS\Contact[]|null
      */
-    public function getCity()
+    public function getContacts()
     {
-        return $this->container['city'];
+        return $this->container['contacts'];
     }
 
     /**
-     * Sets city
+     * Sets contacts
      *
-     * @param string|null $city city
+     * @param \Avalara\SDK\Model\IAMDS\Contact[]|null $contacts Organization contacts
      *
      * @return self
      */
-    public function setCity($city)
+    public function setContacts($contacts)
     {
-        $this->container['city'] = $city;
 
-        return $this;
-    }
 
-    /**
-     * Gets region
-     *
-     * @return string|null
-     */
-    public function getRegion()
-    {
-        return $this->container['region'];
-    }
-
-    /**
-     * Sets region
-     *
-     * @param string|null $region The state code of the address.
-     *
-     * @return self
-     */
-    public function setRegion($region)
-    {
-        $this->container['region'] = $region;
-
-        return $this;
-    }
-
-    /**
-     * Gets country
-     *
-     * @return string|null
-     */
-    public function getCountry()
-    {
-        return $this->container['country'];
-    }
-
-    /**
-     * Sets country
-     *
-     * @param string|null $country The country code of the address.
-     *
-     * @return self
-     */
-    public function setCountry($country)
-    {
-        $allowedValues = $this->getCountryAllowableValues();
-        if (!is_null($country) && !in_array($country, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'country', must be one of '%s'",
-                    $country,
-                    implode("', '", $allowedValues)
-                )
-            );
+        if (!is_null($contacts) && (count($contacts) < 1)) {
+            throw new \InvalidArgumentException('invalid length for $contacts when calling Organization., number of items must be greater than or equal to 1.');
         }
-        $this->container['country'] = $country;
+        $this->container['contacts'] = $contacts;
 
         return $this;
     }
 
     /**
-     * Gets postal_code
+     * Gets address
      *
-     * @return string|null
+     * @return object|null
      */
-    public function getPostalCode()
+    public function getAddress()
     {
-        return $this->container['postal_code'];
+        return $this->container['address'];
     }
 
     /**
-     * Sets postal_code
+     * Sets address
      *
-     * @param string|null $postal_code postal_code
+     * @param object|null $address Address of the Organization
      *
      * @return self
      */
-    public function setPostalCode($postal_code)
+    public function setAddress($address)
     {
-        $this->container['postal_code'] = $postal_code;
+        $this->container['address'] = $address;
+
+        return $this;
+    }
+
+    /**
+     * Gets id
+     *
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->container['id'];
+    }
+
+    /**
+     * Sets id
+     *
+     * @param string $id Unique identifier for the Object
+     *
+     * @return self
+     */
+    public function setId($id)
+    {
+        $this->container['id'] = $id;
+
+        return $this;
+    }
+
+    /**
+     * Gets meta
+     *
+     * @return \Avalara\SDK\Model\IAMDS\InstanceMeta|null
+     */
+    public function getMeta()
+    {
+        return $this->container['meta'];
+    }
+
+    /**
+     * Sets meta
+     *
+     * @param \Avalara\SDK\Model\IAMDS\InstanceMeta|null $meta meta
+     *
+     * @return self
+     */
+    public function setMeta($meta)
+    {
+        $this->container['meta'] = $meta;
+
+        return $this;
+    }
+
+    /**
+     * Gets aspects
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Aspect[]|null
+     */
+    public function getAspects()
+    {
+        return $this->container['aspects'];
+    }
+
+    /**
+     * Sets aspects
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Aspect[]|null $aspects Identifier of the Resource (if any) in other systems
+     *
+     * @return self
+     */
+    public function setAspects($aspects)
+    {
+        $this->container['aspects'] = $aspects;
+
+        return $this;
+    }
+
+    /**
+     * Gets tags
+     *
+     * @return \Avalara\SDK\Model\IAMDS\Tag[]|null
+     */
+    public function getTags()
+    {
+        return $this->container['tags'];
+    }
+
+    /**
+     * Sets tags
+     *
+     * @param \Avalara\SDK\Model\IAMDS\Tag[]|null $tags User defined tags in the form of key:value pair
+     *
+     * @return self
+     */
+    public function setTags($tags)
+    {
+        $this->container['tags'] = $tags;
 
         return $this;
     }
