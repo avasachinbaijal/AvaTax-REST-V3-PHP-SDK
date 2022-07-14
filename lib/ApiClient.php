@@ -247,11 +247,10 @@ class ApiClient
 
     private function buildOAuthRequest($scopes) {
         $this->setTokenUrl();
-        $httpBody = 'grant_type=client_credentials&scope=' . $scopes . '&client_id=' . $this->config->getClientId();
+        $httpBody = 'grant_type=client_credentials&scope=' . $scopes;
         $headers = [];
         $headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getClientId());
-        // $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getClientId() . ":" . $this->config->getClientSecret());
+        $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getClientId() . ":" . $this->config->getClientSecret());
         $headers['Accept'] = 'application/json';
         $request = new Request('POST', $this->tokenUrl, $headers, $httpBody);
         $response = $this->send_sync($request, []);
