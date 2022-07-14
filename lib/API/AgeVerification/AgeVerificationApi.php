@@ -24,7 +24,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.32
+ * @version    2.4.41
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -79,7 +79,7 @@ class AgeVerificationApi
     private function setConfiguration($client): void
     {
         $this->verifyAPIClient($client);
-        $client->setSdkVersion("2.4.32");
+        $client->setSdkVersion("2.4.41");
         $this->headerSelector = new HeaderSelector(); 
         $this->client = $client;
     }
@@ -308,6 +308,8 @@ class AgeVerificationApi
      */
     public function verifyAgeRequest($age_verify_request, $simulated_failure_code = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'age_verify_request' is set
         if ($age_verify_request === null || (is_array($age_verify_request) && count($age_verify_request) === 0)) {
             throw new \InvalidArgumentException(
@@ -347,7 +349,7 @@ class AgeVerificationApi
                 ['application/json']
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -382,15 +384,7 @@ class AgeVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         

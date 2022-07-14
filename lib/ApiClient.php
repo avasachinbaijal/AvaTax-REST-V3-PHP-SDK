@@ -38,6 +38,8 @@ use Avalara\SDK\ApiException;
 use Avalara\SDK\Configuration;
 use Avalara\SDK\HeaderSelector;
 use Avalara\SDK\ObjectSerializer;
+use Avalara\SDK\TokenMetadata;
+use Ds\Map;
 
 /**
  * ApiClient Class Doc Comment
@@ -69,8 +71,20 @@ class ApiClient
      */
     public $headerSelector;
 
-    
+    /**
+     * @var Map
+     */
+    public $accessTokenMap;
 
+    /**
+     * @var string
+     */
+    public $tokenUrl;
+
+    public $PRODUCTION_OPENID_CONFIG_URL = 'https://identity.avalara.com/.well-known/openid-configuration';
+    public $SANDBOX_OPENID_CONFIG_URL = 'https://ai-sbx.avlr.sh/.well-known/openid-configuration';
+    public $QA_OPENID_CONFIG_URL = 'https://ai-awsfqa.avlr.sh/.well-known/openid-configuration';
+    
     /**
      * @param Configuration   $config
      */
@@ -82,14 +96,26 @@ class ApiClient
             throw new ApiException("Configuration is not set or null");
         }
 
+        $this->accessTokenMap = new \Ds\Map();
+
         $this->config = $config;
         $this->environment = $this->config->getEnvironment();
         
         if (strtolower($this->environment)=="sandbox"){
             $this->config->setHost('https://sandbox-rest.avatax.com');
         }
+        elseif(strtolower($this->environment)=="qa"){
+            $this->config->setHost("https://qa-rest.avatax.com");
+        }
         elseif(strtolower($this->environment)=="production"){
             $this->config->setHost("https://rest.avatax.com");
+        }
+        elseif(strtolower($this->environment)=="test"){
+            if (is_null($this->config->getTestBasePath())) {
+                throw new ApiException("TestBasePath must be passed into the config object when environment=\"test\".");
+            } else {
+                $this->config->setHost($this->config->getTestBasePath());
+            }
         }
         else{
             throw new ApiException("Environment is not set correctly.");
@@ -111,6 +137,126 @@ class ApiClient
     {
         $this->sdkVersion = $sdkVersion;
         return $this;
+    }
+
+    /**
+     * Sets the tokenUrl
+     *
+     *
+     * @return $this
+     */
+    public function setTokenUrl()
+    {
+        $environment = $this->config->environment;
+        $testTokenUrl = $this->config->getTestTokenUrl();
+        if (strtolower($environment)=="test") {
+            $this->tokenUrl = $testTokenUrl;
+        } else if (is_null($this->tokenUrl) || strlen($this->tokenUrl) == 0) {
+            try {
+                $request = new Request('GET', $this->getOpenIdConnectUrl());
+                $response = $this->send_sync($request, []);
+                $content = (string) $response->getBody();
+                $oidcResponse = json_decode($content);
+                $this->tokenUrl = $oidcResponse->token_endpoint;
+            } catch (Exception $e) {
+                echo 'Exception when calling OpenIdConnect to fetch the token endpoint: ',  $e->getMessage(), "\n";
+                throw new ApiException('Exception when calling OpenIdConnect to fetch the token endpoint: '.  $e->getMessage());
+            }
+        }
+        return $this;
+    }
+
+    public function getOpenIdConnectUrl() {
+        $environment = strtolower($this->config->environment);
+        switch ($environment) {
+            case "production":
+                return $this->PRODUCTION_OPENID_CONFIG_URL;
+            case "sandbox":
+                return $this->SANDBOX_OPENID_CONFIG_URL;
+            case "qa":
+                return $this->QA_OPENID_CONFIG_URL;
+        }
+    }
+
+    /**
+     * Adds appropriate Authentication header to the array of headers passed in
+     *
+     * @param Array $headers 
+     *
+     * @return $headers
+     */
+    public function applyAuthToRequest($headers, $requiredScopes) {
+        $bearerToken = $this->config->getBearerToken();
+        $clientId = $this->config->getClientId();
+        $clientSecret = $this->config->getClientSecret();
+        $username = $this->config->getUserName();
+        $password = $this->config->getPassword();
+
+        if (!is_null($bearerToken)) {
+            $headers['Authorization'] = 'Bearer ' . $bearerToken;
+        } elseif (!is_null($clientId) && !is_null($clientSecret)) {
+            $scopes = $this->standardizeScopes($requiredScopes);
+            $accessToken = $this->getOAuthAccessToken($scopes);
+            if (is_null($accessToken)) {
+                $this->updateOAuthAccessToken($scopes, null);
+                $accessToken = $this->getOAuthAccessToken($scopes);
+            }
+            $headers['Authorization'] = 'Bearer ' . $accessToken;
+        } elseif (!is_null($username) && !is_null($password)) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($username . ":" . $password);
+        }
+        return $headers;
+    }
+
+    private function standardizeScopes($requiredScopes) {
+        $strArray = explode(' ', $requiredScopes);
+        sort($strArray);
+        return implode(' ', $strArray);
+    }
+
+    private function getOAuthAccessToken($scopes) {
+        $tokenMetadata = null;
+        if ($this->accessTokenMap->hasKey($scopes)) {
+            $tokenMetadata = $this->accessTokenMap->get($scopes);
+        }
+        if (!is_null($tokenMetadata)) {
+            $accessToken = $tokenMetadata->accessToken;
+            $expiry = $tokenMetadata->expiry;
+            $expirationTime = time() + 300;
+            if ($expirationTime < $expiry) {
+                return $accessToken;
+            }
+        }
+        return null;
+    }
+
+    private function updateOAuthAccessToken($scopes, $accessToken) {
+        $currentAccessToken = $this->getOAuthAccessToken($scopes);
+        if (is_null($currentAccessToken) || $currentAccessToken == $accessToken) {
+            try {
+                $data = $this->buildOAuthRequest($scopes);
+                $timestamp = time() + $data->expires_in;
+                $tokenMetadata = new TokenMetadata($data->access_token, $timestamp);
+                $this->accessTokenMap->put($scopes, $tokenMetadata);
+            } catch (Exception $e) {
+                echo 'OAuth2 Token retrieval failed. Error: ',  $e->getMessage(), "\n";
+                throw new ApiException('OAuth2 Token retrieval failed. Error: '.  $e->getMessage());
+            }
+        }
+    }
+
+    private function buildOAuthRequest($scopes) {
+        $this->setTokenUrl();
+        $httpBody = 'grant_type=client_credentials&scope=' . $scopes . '&client_id=' . $this->config->getClientId();
+        $headers = [];
+        $headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getClientId());
+        // $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getClientId() . ":" . $this->config->getClientSecret());
+        $headers['Accept'] = 'application/json';
+        $request = new Request('POST', $this->tokenUrl, $headers, $httpBody);
+        $response = $this->send_sync($request, []);
+        $content = (string) $response->getBody();
+        return json_decode($content);
     }
 
     /**

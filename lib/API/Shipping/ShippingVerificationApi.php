@@ -24,7 +24,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.32
+ * @version    2.4.41
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -79,7 +79,7 @@ class ShippingVerificationApi
     private function setConfiguration($client): void
     {
         $this->verifyAPIClient($client);
-        $client->setSdkVersion("2.4.32");
+        $client->setSdkVersion("2.4.41");
         $this->headerSelector = new HeaderSelector(); 
         $this->client = $client;
     }
@@ -276,6 +276,8 @@ class ShippingVerificationApi
      */
     public function deregisterShipmentRequest($company_code, $transaction_code, $document_type = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'company_code' is set
         if ($company_code === null || (is_array($company_code) && count($company_code) === 0)) {
             throw new \InvalidArgumentException(
@@ -337,7 +339,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -366,15 +368,7 @@ class ShippingVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         
@@ -554,6 +548,8 @@ class ShippingVerificationApi
      */
     public function registerShipmentRequest($company_code, $transaction_code, $document_type = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'company_code' is set
         if ($company_code === null || (is_array($company_code) && count($company_code) === 0)) {
             throw new \InvalidArgumentException(
@@ -615,7 +611,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -644,15 +640,7 @@ class ShippingVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         
@@ -889,6 +877,8 @@ class ShippingVerificationApi
      */
     public function registerShipmentIfCompliantRequest($company_code, $transaction_code, $document_type = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'company_code' is set
         if ($company_code === null || (is_array($company_code) && count($company_code) === 0)) {
             throw new \InvalidArgumentException(
@@ -950,7 +940,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -979,15 +969,7 @@ class ShippingVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         
@@ -1224,6 +1206,8 @@ class ShippingVerificationApi
      */
     public function verifyShipmentRequest($company_code, $transaction_code, $document_type = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'company_code' is set
         if ($company_code === null || (is_array($company_code) && count($company_code) === 0)) {
             throw new \InvalidArgumentException(
@@ -1285,7 +1269,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -1314,15 +1298,7 @@ class ShippingVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         
