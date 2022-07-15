@@ -9,18 +9,21 @@ use \Avalara\SDK\API\AgeVerification\AgeVerificationApi;
 use \Avalara\SDK\Model\AgeVerification\AgeVerifyRequestAddress;
 use \Avalara\SDK\Model\AgeVerification\AgeVerifyRequest;
 use PHPUnit\Framework\TestCase;
+use Dotenv\Dotenv;
 
 class AgeVerificationApiIntegrationTest extends TestCase
 {
     public function testVerifyShipment()
     {
+        $dotenv = Dotenv::createImmutable(getcwd());
+        $dotenv->load();
         $config = new \Avalara\SDK\Configuration();
-        $config->username=getenv('USERNAME');
-        $config->password=getenv('PASSWORD');
+        $config->username=getenv('AUTH_USERNAME');
+        $config->password=getenv('AUTH_PASSWORD');
         $config->appName='testApplication';
         $config->appVersion='2.1.2';
         $config->machineName='localhost';
-        $config->environment='sandbox';    
+        $config->environment='sandbox';  
 
         $client=  new \Avalara\SDK\ApiClient($config);
         $apiInstance = new \Avalara\SDK\API\AgeVerification\AgeVerificationApi($client);

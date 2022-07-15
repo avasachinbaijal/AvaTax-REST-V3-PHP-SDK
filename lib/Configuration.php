@@ -58,13 +58,6 @@ class Configuration
     public $apiKeyPrefixes = [];
 
     /**
-     * Access token for OAuth/Bearer authentication
-     *
-     * @var string
-     */
-    public $accessToken = '';
-
-    /**
      * Gets the application name. 
      *
      * @var string
@@ -134,6 +127,41 @@ class Configuration
      * @var string
      */
     protected $tempFolderPath;
+
+    /**
+     * The OAuth 2.0 token provided by Avalara Identity
+     *
+     * @var string
+     */
+    protected $bearerToken;
+
+    /**
+     * The ClientId used for the OAuth2 Client Credentials flow
+     *
+     * @var string
+     */
+    protected $clientId;
+
+    /**
+     * The ClientSecret used for the OAuth2 Client Credentials flow
+     *
+     * @var string
+     */
+    protected $clientSecret;
+
+    /**
+     * The Test Base Path to be used for local development for calling the Avalara APIs
+     *
+     * @var string
+     */
+    protected $testBasePath;
+
+    /**
+     * The Test Token URL to be used for local development to invoke the OAuth2 flow
+     *
+     * @var string
+     */
+    protected $testTokenUrl;
 
     /**
      * Constructor
@@ -209,24 +237,116 @@ class Configuration
     /**
      * Sets the access token for OAuth
      *
-     * @param string $accessToken Token for OAuth
+     * @param string Bearer Token for OAuth
      *
      * @return $this
      */
-    public function setAccessToken($accessToken)
+    public function setBearerToken($bearerToken)
     {
-        $this->accessToken = $accessToken;
+        $this->bearerToken = $bearerToken;
         return $this;
     }
 
     /**
      * Gets the access token for OAuth
      *
-     * @return string Access token for OAuth
+     * @return string Bearer token for OAuth
      */
-    public function getAccessToken()
+    public function getBearerToken()
     {
-        return $this->accessToken;
+        return $this->bearerToken;
+    }
+
+    /**
+     * Sets the ClientId used for the OAuth2 Client Credentials flow
+     *
+     * @param string ClientId for OAuth client creds flow
+     *
+     * @return $this
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+        return $this;
+    }
+
+    /**
+     * Gets the clientId for OAuth2
+     *
+     * @return string ClientId for OAuth2
+     */
+    public function getClientId()
+    {
+        return $this->clientId;
+    }
+
+    /**
+     * Sets the clientSecret used for the OAuth2 Client Credentials flow
+     *
+     * @param string clientSecret for OAuth client creds flow
+     *
+     * @return $this
+     */
+    public function setClientSecret($clientSecret)
+    {
+        $this->clientSecret = $clientSecret;
+        return $this;
+    }
+
+    /**
+     * Gets the clientSecret for OAuth2
+     *
+     * @return string clientSecret for OAuth2
+     */
+    public function getClientSecret()
+    {
+        return $this->clientSecret;
+    }
+
+    /**
+     * Sets the Test Base Path to be used for local development for calling the Avalara APIs
+     *
+     * @param string testBasePath
+     *
+     * @return $this
+     */
+    public function setTestBasePath($testBasePath)
+    {
+        $this->testBasePath = $testBasePath;
+        return $this;
+    }
+
+    /**
+     * Gets the Test Base Path to be used for local development for calling the Avalara APIs
+     *
+     * @return string testBasePath
+     */
+    public function getTestBasePath()
+    {
+        return $this->testBasePath;
+    }
+
+    /**
+     * Sets The Test Token URL to be used for local development to invoke the OAuth2 flow
+     *
+     * @param string clientSecret for OAuth client creds flow
+     *
+     * @return $this
+     */
+    public function setTestTokenUrl($testTokenUrl)
+    {
+        $this->testTokenUrl = $testTokenUrl;
+        return $this;
+    }
+
+    /**
+     * Gets the Test Token URL to be used for local development to invoke the OAuth2 flow
+     *
+     * @return string testTokenUrl
+     */
+    public function getTestTokenUrl()
+    {
+        return $this->testTokenUrl;
     }
 
     /**

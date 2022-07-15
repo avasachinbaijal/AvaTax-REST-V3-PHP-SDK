@@ -24,7 +24,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.32
+ * @version    2.4.41
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -79,7 +79,7 @@ class AgeVerificationApi
     private function setConfiguration($client): void
     {
         $this->verifyAPIClient($client);
-        $client->setSdkVersion("2.4.32");
+        $client->setSdkVersion("2.4.41");
         $this->headerSelector = new HeaderSelector(); 
         $this->client = $client;
     }
@@ -145,8 +145,10 @@ class AgeVerificationApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\AgeVerification\AgeVerifyResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function verifyAgeWithHttpInfo($age_verify_request, $simulated_failure_code = null)
+    public function verifyAgeWithHttpInfo($age_verify_request, $simulated_failure_code = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         $request = $this->verifyAgeRequest($age_verify_request, $simulated_failure_code);
 
         try {
@@ -154,6 +156,12 @@ class AgeVerificationApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->verifyAgeWithHttpInfo($age_verify_request, $simulated_failure_code, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -167,8 +175,8 @@ class AgeVerificationApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -259,11 +267,10 @@ class AgeVerificationApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function verifyAgeAsyncWithHttpInfo($age_verify_request, $simulated_failure_code = null)
+    public function verifyAgeAsyncWithHttpInfo($age_verify_request, $simulated_failure_code = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\AgeVerification\AgeVerifyResult';
         $request = $this->verifyAgeRequest($age_verify_request, $simulated_failure_code);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -280,9 +287,20 @@ class AgeVerificationApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($age_verify_request, $simulated_failure_code, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->verifyAgeAsyncWithHttpInfo($age_verify_request, $simulated_failure_code, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -308,6 +326,8 @@ class AgeVerificationApi
      */
     public function verifyAgeRequest($age_verify_request, $simulated_failure_code = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'age_verify_request' is set
         if ($age_verify_request === null || (is_array($age_verify_request) && count($age_verify_request) === 0)) {
             throw new \InvalidArgumentException(
@@ -347,7 +367,7 @@ class AgeVerificationApi
                 ['application/json']
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -382,15 +402,7 @@ class AgeVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         

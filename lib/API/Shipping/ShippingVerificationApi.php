@@ -24,7 +24,7 @@
  * @author     Jonathan Wenger <jonathan.wenger@avalara.com>
  * @copyright  2004-2022 Avalara, Inc.
  * @license    https://www.apache.org/licenses/LICENSE-2.0
- * @version    2.4.32
+ * @version    2.4.41
  * @link       https://github.com/avadev/AvaTax-REST-V3-PHP-SDK
 
  */
@@ -79,7 +79,7 @@ class ShippingVerificationApi
     private function setConfiguration($client): void
     {
         $this->verifyAPIClient($client);
-        $client->setSdkVersion("2.4.32");
+        $client->setSdkVersion("2.4.41");
         $this->headerSelector = new HeaderSelector(); 
         $this->client = $client;
     }
@@ -146,8 +146,10 @@ class ShippingVerificationApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deregisterShipmentWithHttpInfo($company_code, $transaction_code, $document_type = null)
+    public function deregisterShipmentWithHttpInfo($company_code, $transaction_code, $document_type = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         $request = $this->deregisterShipmentRequest($company_code, $transaction_code, $document_type);
 
         try {
@@ -155,6 +157,11 @@ class ShippingVerificationApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->deregisterShipmentWithHttpInfo($company_code, $transaction_code, $document_type, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -168,8 +175,8 @@ class ShippingVerificationApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -236,20 +243,30 @@ class ShippingVerificationApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deregisterShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null)
+    public function deregisterShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->deregisterShipmentRequest($company_code, $transaction_code, $document_type);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($company_code, $transaction_code, $document_type, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->deregisterShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -276,6 +293,8 @@ class ShippingVerificationApi
      */
     public function deregisterShipmentRequest($company_code, $transaction_code, $document_type = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'company_code' is set
         if ($company_code === null || (is_array($company_code) && count($company_code) === 0)) {
             throw new \InvalidArgumentException(
@@ -337,7 +356,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -366,15 +385,7 @@ class ShippingVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         
@@ -424,8 +435,10 @@ class ShippingVerificationApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function registerShipmentWithHttpInfo($company_code, $transaction_code, $document_type = null)
+    public function registerShipmentWithHttpInfo($company_code, $transaction_code, $document_type = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         $request = $this->registerShipmentRequest($company_code, $transaction_code, $document_type);
 
         try {
@@ -433,6 +446,11 @@ class ShippingVerificationApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->registerShipmentWithHttpInfo($company_code, $transaction_code, $document_type, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -446,8 +464,8 @@ class ShippingVerificationApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -514,20 +532,30 @@ class ShippingVerificationApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function registerShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null)
+    public function registerShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->registerShipmentRequest($company_code, $transaction_code, $document_type);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($company_code, $transaction_code, $document_type, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->registerShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -554,6 +582,8 @@ class ShippingVerificationApi
      */
     public function registerShipmentRequest($company_code, $transaction_code, $document_type = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'company_code' is set
         if ($company_code === null || (is_array($company_code) && count($company_code) === 0)) {
             throw new \InvalidArgumentException(
@@ -615,7 +645,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -644,15 +674,7 @@ class ShippingVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         
@@ -703,8 +725,10 @@ class ShippingVerificationApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\Shipping\ShippingVerifyResult|\Avalara\SDK\Model\Shipping\ErrorDetails, HTTP status code, HTTP response headers (array of strings)
      */
-    public function registerShipmentIfCompliantWithHttpInfo($company_code, $transaction_code, $document_type = null)
+    public function registerShipmentIfCompliantWithHttpInfo($company_code, $transaction_code, $document_type = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         $request = $this->registerShipmentIfCompliantRequest($company_code, $transaction_code, $document_type);
 
         try {
@@ -712,6 +736,12 @@ class ShippingVerificationApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->registerShipmentIfCompliantWithHttpInfo($company_code, $transaction_code, $document_type, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -725,8 +755,8 @@ class ShippingVerificationApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -839,11 +869,10 @@ class ShippingVerificationApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function registerShipmentIfCompliantAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null)
+    public function registerShipmentIfCompliantAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\Shipping\ShippingVerifyResult';
         $request = $this->registerShipmentIfCompliantRequest($company_code, $transaction_code, $document_type);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -860,9 +889,20 @@ class ShippingVerificationApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($company_code, $transaction_code, $document_type, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->registerShipmentIfCompliantAsyncWithHttpInfo($company_code, $transaction_code, $document_type, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -889,6 +929,8 @@ class ShippingVerificationApi
      */
     public function registerShipmentIfCompliantRequest($company_code, $transaction_code, $document_type = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'company_code' is set
         if ($company_code === null || (is_array($company_code) && count($company_code) === 0)) {
             throw new \InvalidArgumentException(
@@ -950,7 +992,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -979,15 +1021,7 @@ class ShippingVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         
@@ -1038,8 +1072,10 @@ class ShippingVerificationApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\Shipping\ShippingVerifyResult|\Avalara\SDK\Model\Shipping\ErrorDetails, HTTP status code, HTTP response headers (array of strings)
      */
-    public function verifyShipmentWithHttpInfo($company_code, $transaction_code, $document_type = null)
+    public function verifyShipmentWithHttpInfo($company_code, $transaction_code, $document_type = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         $request = $this->verifyShipmentRequest($company_code, $transaction_code, $document_type);
 
         try {
@@ -1047,6 +1083,12 @@ class ShippingVerificationApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->verifyShipmentWithHttpInfo($company_code, $transaction_code, $document_type, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1060,8 +1102,8 @@ class ShippingVerificationApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1174,11 +1216,10 @@ class ShippingVerificationApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function verifyShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null)
+    public function verifyShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\Shipping\ShippingVerifyResult';
         $request = $this->verifyShipmentRequest($company_code, $transaction_code, $document_type);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1195,9 +1236,20 @@ class ShippingVerificationApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($company_code, $transaction_code, $document_type, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->verifyShipmentAsyncWithHttpInfo($company_code, $transaction_code, $document_type, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1224,6 +1276,8 @@ class ShippingVerificationApi
      */
     public function verifyShipmentRequest($company_code, $transaction_code, $document_type = null)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         // verify the required parameter 'company_code' is set
         if ($company_code === null || (is_array($company_code) && count($company_code) === 0)) {
             throw new \InvalidArgumentException(
@@ -1285,7 +1339,7 @@ class ShippingVerificationApi
                 []
             );
         }
-        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.32; {$this->client->config->getMachineName()}";
+        $clientId="{$this->client->config->getAppName()}; {$this->client->config->getAppVersion()}; PhpRestClient; 2.4.41; {$this->client->config->getMachineName()}";
 
         $headers['X-Avalara-Client']=$clientId;
 
@@ -1314,15 +1368,7 @@ class ShippingVerificationApi
             }
         }
 
-        // this endpoint rehquires HTTP basic authentication
-        if (!empty($this->client->config->getUsername()) || !(empty($this->client->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->client->config->getUsername() . ":" . $this->client->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->client->config->getApiKeyWithPrefix('Authorization');
-        if ($apiKey !== null) {
-            $headers['Authorization'] = $apiKey;
-        }
+        $headers = $this->client->applyAuthToRequest($headers, $requiredScopes);
 
         $defaultHeaders = [];
         
