@@ -147,8 +147,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\Resource|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createResourceWithHttpInfo($avalara_version = null, $x_correlation_id = null, $resource = null)
+    public function createResourceWithHttpInfo($avalara_version = null, $x_correlation_id = null, $resource = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->createResourceRequest($avalara_version, $x_correlation_id, $resource);
 
         try {
@@ -156,6 +158,12 @@ class ResourceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->createResourceWithHttpInfo($avalara_version, $x_correlation_id, $resource, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -169,8 +177,8 @@ class ResourceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -283,11 +291,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createResourceAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $resource = null)
+    public function createResourceAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $resource = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\Resource';
         $request = $this->createResourceRequest($avalara_version, $x_correlation_id, $resource);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -304,9 +311,20 @@ class ResourceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($avalara_version, $x_correlation_id, $resource, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->createResourceAsyncWithHttpInfo($avalara_version, $x_correlation_id, $resource, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -450,8 +468,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteResourceWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null)
+    public function deleteResourceWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->deleteResourceRequest($resource_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -459,6 +479,11 @@ class ResourceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->deleteResourceWithHttpInfo($resource_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -472,8 +497,8 @@ class ResourceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -540,20 +565,30 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteResourceAsyncWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null)
+    public function deleteResourceAsyncWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->deleteResourceRequest($resource_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($resource_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->deleteResourceAsyncWithHttpInfo($resource_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -710,8 +745,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\Resource|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getResourceWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $if_match = null)
+    public function getResourceWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $if_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->getResourceRequest($resource_id, $avalara_version, $x_correlation_id, $if_none_match, $if_match);
 
         try {
@@ -719,6 +756,12 @@ class ResourceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->getResourceWithHttpInfo($resource_id, $avalara_version, $x_correlation_id, $if_none_match, $if_match, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -732,8 +775,8 @@ class ResourceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -850,11 +893,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getResourceAsyncWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $if_match = null)
+    public function getResourceAsyncWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $if_match = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\Resource';
         $request = $this->getResourceRequest($resource_id, $avalara_version, $x_correlation_id, $if_none_match, $if_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -871,9 +913,20 @@ class ResourceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($resource_id, $avalara_version, $x_correlation_id, $if_none_match, $if_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->getResourceAsyncWithHttpInfo($resource_id, $avalara_version, $x_correlation_id, $if_none_match, $if_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1048,8 +1101,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\PermissionList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listResourcePermissionsWithHttpInfo($resource_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listResourcePermissionsWithHttpInfo($resource_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listResourcePermissionsRequest($resource_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1057,6 +1112,12 @@ class ResourceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listResourcePermissionsWithHttpInfo($resource_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1070,8 +1131,8 @@ class ResourceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1196,11 +1257,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listResourcePermissionsAsyncWithHttpInfo($resource_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listResourcePermissionsAsyncWithHttpInfo($resource_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\PermissionList';
         $request = $this->listResourcePermissionsRequest($resource_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1217,9 +1277,20 @@ class ResourceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($resource_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listResourcePermissionsAsyncWithHttpInfo($resource_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1454,8 +1525,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\ResourceList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listResourcesWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listResourcesWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listResourcesRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1463,6 +1536,12 @@ class ResourceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listResourcesWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1476,8 +1555,8 @@ class ResourceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1600,11 +1679,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listResourcesAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listResourcesAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\ResourceList';
         $request = $this->listResourcesRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1621,9 +1699,20 @@ class ResourceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listResourcesAsyncWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1836,8 +1925,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function patchResourceWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $resource = null)
+    public function patchResourceWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $resource = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->patchResourceRequest($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource);
 
         try {
@@ -1845,6 +1936,11 @@ class ResourceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->patchResourceWithHttpInfo($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1858,8 +1954,8 @@ class ResourceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1930,20 +2026,30 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function patchResourceAsyncWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $resource = null)
+    public function patchResourceAsyncWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $resource = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->patchResourceRequest($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->patchResourceAsyncWithHttpInfo($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2111,8 +2217,10 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function replaceResourceWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $resource = null)
+    public function replaceResourceWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $resource = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->replaceResourceRequest($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource);
 
         try {
@@ -2120,6 +2228,11 @@ class ResourceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->replaceResourceWithHttpInfo($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2133,8 +2246,8 @@ class ResourceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2205,20 +2318,30 @@ class ResourceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function replaceResourceAsyncWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $resource = null)
+    public function replaceResourceAsyncWithHttpInfo($resource_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $resource = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->replaceResourceRequest($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->replaceResourceAsyncWithHttpInfo($resource_id, $avalara_version, $x_correlation_id, $if_match, $resource, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',

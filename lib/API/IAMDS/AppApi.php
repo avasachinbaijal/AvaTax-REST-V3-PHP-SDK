@@ -148,8 +148,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function addGrantToAppWithHttpInfo($app_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function addGrantToAppWithHttpInfo($app_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->addGrantToAppRequest($app_id, $grant_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -157,6 +159,11 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->addGrantToAppWithHttpInfo($app_id, $grant_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -170,8 +177,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -240,20 +247,30 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function addGrantToAppAsyncWithHttpInfo($app_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function addGrantToAppAsyncWithHttpInfo($app_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->addGrantToAppRequest($app_id, $grant_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($app_id, $grant_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->addGrantToAppAsyncWithHttpInfo($app_id, $grant_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -421,8 +438,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\App|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createAppWithHttpInfo($avalara_version = null, $x_correlation_id = null, $app = null)
+    public function createAppWithHttpInfo($avalara_version = null, $x_correlation_id = null, $app = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->createAppRequest($avalara_version, $x_correlation_id, $app);
 
         try {
@@ -430,6 +449,12 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->createAppWithHttpInfo($avalara_version, $x_correlation_id, $app, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -443,8 +468,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -557,11 +582,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createAppAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $app = null)
+    public function createAppAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $app = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\App';
         $request = $this->createAppRequest($avalara_version, $x_correlation_id, $app);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -578,9 +602,20 @@ class AppApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($avalara_version, $x_correlation_id, $app, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->createAppAsyncWithHttpInfo($avalara_version, $x_correlation_id, $app, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -725,8 +760,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of string|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createAppSecretWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null)
+    public function createAppSecretWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->createAppSecretRequest($app_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -734,6 +771,12 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->createAppSecretWithHttpInfo($app_id, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -747,8 +790,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -861,11 +904,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createAppSecretAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null)
+    public function createAppSecretAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = 'string';
         $request = $this->createAppSecretRequest($app_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -882,9 +924,20 @@ class AppApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($app_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->createAppSecretAsyncWithHttpInfo($app_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1038,8 +1091,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteAppWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deleteAppWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->deleteAppRequest($app_id, $avalara_version, $x_correlation_id, $if_match);
 
         try {
@@ -1047,6 +1102,11 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->deleteAppWithHttpInfo($app_id, $avalara_version, $x_correlation_id, $if_match, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1060,8 +1120,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1130,20 +1190,30 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteAppAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deleteAppAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->deleteAppRequest($app_id, $avalara_version, $x_correlation_id, $if_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($app_id, $avalara_version, $x_correlation_id, $if_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->deleteAppAsyncWithHttpInfo($app_id, $avalara_version, $x_correlation_id, $if_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1303,8 +1373,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\App|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getAppWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getAppWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->getAppRequest($app_id, $avalara_version, $x_correlation_id, $if_none_match);
 
         try {
@@ -1312,6 +1384,12 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->getAppWithHttpInfo($app_id, $avalara_version, $x_correlation_id, $if_none_match, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1325,8 +1403,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1441,11 +1519,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getAppAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getAppAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\App';
         $request = $this->getAppRequest($app_id, $avalara_version, $x_correlation_id, $if_none_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1462,9 +1539,20 @@ class AppApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($app_id, $avalara_version, $x_correlation_id, $if_none_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->getAppAsyncWithHttpInfo($app_id, $avalara_version, $x_correlation_id, $if_none_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1634,8 +1722,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\AppList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listAppGrantsWithHttpInfo($app_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listAppGrantsWithHttpInfo($app_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listAppGrantsRequest($app_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1643,6 +1733,12 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listAppGrantsWithHttpInfo($app_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1656,8 +1752,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1782,11 +1878,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listAppGrantsAsyncWithHttpInfo($app_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listAppGrantsAsyncWithHttpInfo($app_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\AppList';
         $request = $this->listAppGrantsRequest($app_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1803,9 +1898,20 @@ class AppApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($app_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listAppGrantsAsyncWithHttpInfo($app_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2040,8 +2146,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\AppList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listAppsWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listAppsWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listAppsRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -2049,6 +2157,12 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listAppsWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2062,8 +2176,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2186,11 +2300,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listAppsAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listAppsAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\AppList';
         $request = $this->listAppsRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -2207,9 +2320,20 @@ class AppApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listAppsAsyncWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2422,8 +2546,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function patchAppWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $app = null)
+    public function patchAppWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $app = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->patchAppRequest($app_id, $avalara_version, $x_correlation_id, $if_match, $app);
 
         try {
@@ -2431,6 +2557,11 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->patchAppWithHttpInfo($app_id, $avalara_version, $x_correlation_id, $if_match, $app, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2444,8 +2575,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2516,20 +2647,30 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function patchAppAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $app = null)
+    public function patchAppAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $app = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->patchAppRequest($app_id, $avalara_version, $x_correlation_id, $if_match, $app);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($app_id, $avalara_version, $x_correlation_id, $if_match, $app, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->patchAppAsyncWithHttpInfo($app_id, $avalara_version, $x_correlation_id, $if_match, $app, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2695,8 +2836,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function removeGrantFromAppWithHttpInfo($app_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeGrantFromAppWithHttpInfo($app_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->removeGrantFromAppRequest($app_id, $grant_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -2704,6 +2847,11 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->removeGrantFromAppWithHttpInfo($app_id, $grant_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2717,8 +2865,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2787,20 +2935,30 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function removeGrantFromAppAsyncWithHttpInfo($app_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeGrantFromAppAsyncWithHttpInfo($app_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->removeGrantFromAppRequest($app_id, $grant_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($app_id, $grant_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->removeGrantFromAppAsyncWithHttpInfo($app_id, $grant_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2971,8 +3129,10 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function replaceAppWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $app = null)
+    public function replaceAppWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $app = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->replaceAppRequest($app_id, $avalara_version, $x_correlation_id, $if_match, $app);
 
         try {
@@ -2980,6 +3140,11 @@ class AppApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->replaceAppWithHttpInfo($app_id, $avalara_version, $x_correlation_id, $if_match, $app, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2993,8 +3158,8 @@ class AppApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -3065,20 +3230,30 @@ class AppApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function replaceAppAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $app = null)
+    public function replaceAppAsyncWithHttpInfo($app_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $app = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->replaceAppRequest($app_id, $avalara_version, $x_correlation_id, $if_match, $app);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($app_id, $avalara_version, $x_correlation_id, $if_match, $app, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->replaceAppAsyncWithHttpInfo($app_id, $avalara_version, $x_correlation_id, $if_match, $app, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',

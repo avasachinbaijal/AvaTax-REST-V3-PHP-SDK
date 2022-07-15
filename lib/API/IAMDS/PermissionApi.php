@@ -147,8 +147,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\Permission|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createPermissionWithHttpInfo($avalara_version = null, $x_correlation_id = null, $permission = null)
+    public function createPermissionWithHttpInfo($avalara_version = null, $x_correlation_id = null, $permission = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->createPermissionRequest($avalara_version, $x_correlation_id, $permission);
 
         try {
@@ -156,6 +158,12 @@ class PermissionApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->createPermissionWithHttpInfo($avalara_version, $x_correlation_id, $permission, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -169,8 +177,8 @@ class PermissionApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -283,11 +291,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createPermissionAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $permission = null)
+    public function createPermissionAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $permission = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\Permission';
         $request = $this->createPermissionRequest($avalara_version, $x_correlation_id, $permission);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -304,9 +311,20 @@ class PermissionApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($avalara_version, $x_correlation_id, $permission, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->createPermissionAsyncWithHttpInfo($avalara_version, $x_correlation_id, $permission, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -452,8 +470,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deletePermissionWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deletePermissionWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->deletePermissionRequest($permission_id, $avalara_version, $x_correlation_id, $if_match);
 
         try {
@@ -461,6 +481,11 @@ class PermissionApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->deletePermissionWithHttpInfo($permission_id, $avalara_version, $x_correlation_id, $if_match, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -474,8 +499,8 @@ class PermissionApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -544,20 +569,30 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePermissionAsyncWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deletePermissionAsyncWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->deletePermissionRequest($permission_id, $avalara_version, $x_correlation_id, $if_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($permission_id, $avalara_version, $x_correlation_id, $if_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->deletePermissionAsyncWithHttpInfo($permission_id, $avalara_version, $x_correlation_id, $if_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -717,8 +752,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\Permission|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getPermissionWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getPermissionWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->getPermissionRequest($permission_id, $avalara_version, $x_correlation_id, $if_none_match);
 
         try {
@@ -726,6 +763,12 @@ class PermissionApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->getPermissionWithHttpInfo($permission_id, $avalara_version, $x_correlation_id, $if_none_match, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -739,8 +782,8 @@ class PermissionApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -855,11 +898,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getPermissionAsyncWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getPermissionAsyncWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\Permission';
         $request = $this->getPermissionRequest($permission_id, $avalara_version, $x_correlation_id, $if_none_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -876,9 +918,20 @@ class PermissionApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($permission_id, $avalara_version, $x_correlation_id, $if_none_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->getPermissionAsyncWithHttpInfo($permission_id, $avalara_version, $x_correlation_id, $if_none_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1046,8 +1099,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\PermissionList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listPermissionsWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listPermissionsWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listPermissionsRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1055,6 +1110,12 @@ class PermissionApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listPermissionsWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1068,8 +1129,8 @@ class PermissionApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1192,11 +1253,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listPermissionsAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listPermissionsAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\PermissionList';
         $request = $this->listPermissionsRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1213,9 +1273,20 @@ class PermissionApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listPermissionsAsyncWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1428,8 +1499,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function patchPermissionWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $permission = null)
+    public function patchPermissionWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $permission = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->patchPermissionRequest($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission);
 
         try {
@@ -1437,6 +1510,11 @@ class PermissionApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->patchPermissionWithHttpInfo($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1450,8 +1528,8 @@ class PermissionApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1522,20 +1600,30 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function patchPermissionAsyncWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $permission = null)
+    public function patchPermissionAsyncWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $permission = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->patchPermissionRequest($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->patchPermissionAsyncWithHttpInfo($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1703,8 +1791,10 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function replacePermissionWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $permission = null)
+    public function replacePermissionWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $permission = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->replacePermissionRequest($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission);
 
         try {
@@ -1712,6 +1802,11 @@ class PermissionApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->replacePermissionWithHttpInfo($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1725,8 +1820,8 @@ class PermissionApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1797,20 +1892,30 @@ class PermissionApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function replacePermissionAsyncWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $permission = null)
+    public function replacePermissionAsyncWithHttpInfo($permission_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $permission = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->replacePermissionRequest($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->replacePermissionAsyncWithHttpInfo($permission_id, $avalara_version, $x_correlation_id, $if_match, $permission, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',

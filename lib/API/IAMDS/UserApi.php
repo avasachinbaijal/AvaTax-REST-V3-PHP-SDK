@@ -147,8 +147,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\User|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createUserWithHttpInfo($avalara_version = null, $x_correlation_id = null, $user = null)
+    public function createUserWithHttpInfo($avalara_version = null, $x_correlation_id = null, $user = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "avatax_api";
         $request = $this->createUserRequest($avalara_version, $x_correlation_id, $user);
 
         try {
@@ -156,6 +158,12 @@ class UserApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->createUserWithHttpInfo($avalara_version, $x_correlation_id, $user, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -169,8 +177,8 @@ class UserApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -283,11 +291,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createUserAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $user = null)
+    public function createUserAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $user = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\User';
         $request = $this->createUserRequest($avalara_version, $x_correlation_id, $user);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -304,9 +311,20 @@ class UserApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($avalara_version, $x_correlation_id, $user, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->createUserAsyncWithHttpInfo($avalara_version, $x_correlation_id, $user, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -452,8 +470,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteUserWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deleteUserWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->deleteUserRequest($user_id, $avalara_version, $x_correlation_id, $if_match);
 
         try {
@@ -461,6 +481,11 @@ class UserApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->deleteUserWithHttpInfo($user_id, $avalara_version, $x_correlation_id, $if_match, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -474,8 +499,8 @@ class UserApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -544,20 +569,30 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserAsyncWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deleteUserAsyncWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->deleteUserRequest($user_id, $avalara_version, $x_correlation_id, $if_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($user_id, $avalara_version, $x_correlation_id, $if_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->deleteUserAsyncWithHttpInfo($user_id, $avalara_version, $x_correlation_id, $if_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -717,8 +752,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\User|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getUserWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getUserWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam";
         $request = $this->getUserRequest($user_id, $avalara_version, $x_correlation_id, $if_none_match);
 
         try {
@@ -726,6 +763,12 @@ class UserApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->getUserWithHttpInfo($user_id, $avalara_version, $x_correlation_id, $if_none_match, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -739,8 +782,8 @@ class UserApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -855,11 +898,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getUserAsyncWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getUserAsyncWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\User';
         $request = $this->getUserRequest($user_id, $avalara_version, $x_correlation_id, $if_none_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -876,9 +918,20 @@ class UserApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($user_id, $avalara_version, $x_correlation_id, $if_none_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->getUserAsyncWithHttpInfo($user_id, $avalara_version, $x_correlation_id, $if_none_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1048,8 +1101,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\TenantList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getUserTenantsWithHttpInfo($user_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function getUserTenantsWithHttpInfo($user_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->getUserTenantsRequest($user_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1057,6 +1112,12 @@ class UserApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->getUserTenantsWithHttpInfo($user_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1070,8 +1131,8 @@ class UserApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1196,11 +1257,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getUserTenantsAsyncWithHttpInfo($user_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function getUserTenantsAsyncWithHttpInfo($user_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\TenantList';
         $request = $this->getUserTenantsRequest($user_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1217,9 +1277,20 @@ class UserApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($user_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->getUserTenantsAsyncWithHttpInfo($user_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1454,8 +1525,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\UserList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listUsersWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listUsersWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "avatax_api";
         $request = $this->listUsersRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1463,6 +1536,12 @@ class UserApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listUsersWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1476,8 +1555,8 @@ class UserApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1600,11 +1679,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listUsersAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listUsersAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\UserList';
         $request = $this->listUsersRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1621,9 +1699,20 @@ class UserApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listUsersAsyncWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1836,8 +1925,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function patchUserWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $user = null)
+    public function patchUserWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $user = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->patchUserRequest($user_id, $avalara_version, $x_correlation_id, $if_match, $user);
 
         try {
@@ -1845,6 +1936,11 @@ class UserApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->patchUserWithHttpInfo($user_id, $avalara_version, $x_correlation_id, $if_match, $user, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1858,8 +1954,8 @@ class UserApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1930,20 +2026,30 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function patchUserAsyncWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $user = null)
+    public function patchUserAsyncWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $user = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->patchUserRequest($user_id, $avalara_version, $x_correlation_id, $if_match, $user);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($user_id, $avalara_version, $x_correlation_id, $if_match, $user, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->patchUserAsyncWithHttpInfo($user_id, $avalara_version, $x_correlation_id, $if_match, $user, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2111,8 +2217,10 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function replaceUserWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $user = null)
+    public function replaceUserWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $user = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "avatax_api iam";
         $request = $this->replaceUserRequest($user_id, $avalara_version, $x_correlation_id, $if_match, $user);
 
         try {
@@ -2120,6 +2228,11 @@ class UserApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->replaceUserWithHttpInfo($user_id, $avalara_version, $x_correlation_id, $if_match, $user, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2133,8 +2246,8 @@ class UserApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2205,20 +2318,30 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function replaceUserAsyncWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $user = null)
+    public function replaceUserAsyncWithHttpInfo($user_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $user = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->replaceUserRequest($user_id, $avalara_version, $x_correlation_id, $if_match, $user);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($user_id, $avalara_version, $x_correlation_id, $if_match, $user, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "avatax_api iam";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->replaceUserAsyncWithHttpInfo($user_id, $avalara_version, $x_correlation_id, $if_match, $user, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',

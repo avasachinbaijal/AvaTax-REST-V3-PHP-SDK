@@ -148,8 +148,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function addGrantToDeviceWithHttpInfo($device_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function addGrantToDeviceWithHttpInfo($device_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->addGrantToDeviceRequest($device_id, $grant_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -157,6 +159,11 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->addGrantToDeviceWithHttpInfo($device_id, $grant_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -170,8 +177,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -240,20 +247,30 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function addGrantToDeviceAsyncWithHttpInfo($device_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function addGrantToDeviceAsyncWithHttpInfo($device_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->addGrantToDeviceRequest($device_id, $grant_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($device_id, $grant_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->addGrantToDeviceAsyncWithHttpInfo($device_id, $grant_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -421,8 +438,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\Device|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createDeviceWithHttpInfo($avalara_version = null, $x_correlation_id = null, $device = null)
+    public function createDeviceWithHttpInfo($avalara_version = null, $x_correlation_id = null, $device = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->createDeviceRequest($avalara_version, $x_correlation_id, $device);
 
         try {
@@ -430,6 +449,12 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->createDeviceWithHttpInfo($avalara_version, $x_correlation_id, $device, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -443,8 +468,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -557,11 +582,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createDeviceAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $device = null)
+    public function createDeviceAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $device = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\Device';
         $request = $this->createDeviceRequest($avalara_version, $x_correlation_id, $device);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -578,9 +602,20 @@ class DeviceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($avalara_version, $x_correlation_id, $device, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->createDeviceAsyncWithHttpInfo($avalara_version, $x_correlation_id, $device, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -726,8 +761,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteDeviceWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deleteDeviceWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->deleteDeviceRequest($device_id, $avalara_version, $x_correlation_id, $if_match);
 
         try {
@@ -735,6 +772,11 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->deleteDeviceWithHttpInfo($device_id, $avalara_version, $x_correlation_id, $if_match, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -748,8 +790,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -818,20 +860,30 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteDeviceAsyncWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deleteDeviceAsyncWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->deleteDeviceRequest($device_id, $avalara_version, $x_correlation_id, $if_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($device_id, $avalara_version, $x_correlation_id, $if_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->deleteDeviceAsyncWithHttpInfo($device_id, $avalara_version, $x_correlation_id, $if_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -991,8 +1043,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\Device|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getDeviceWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getDeviceWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->getDeviceRequest($device_id, $avalara_version, $x_correlation_id, $if_none_match);
 
         try {
@@ -1000,6 +1054,12 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->getDeviceWithHttpInfo($device_id, $avalara_version, $x_correlation_id, $if_none_match, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1013,8 +1073,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1129,11 +1189,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getDeviceAsyncWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getDeviceAsyncWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\Device';
         $request = $this->getDeviceRequest($device_id, $avalara_version, $x_correlation_id, $if_none_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1150,9 +1209,20 @@ class DeviceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($device_id, $avalara_version, $x_correlation_id, $if_none_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->getDeviceAsyncWithHttpInfo($device_id, $avalara_version, $x_correlation_id, $if_none_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1322,8 +1392,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\GroupList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getDeviceGroupsWithHttpInfo($device_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function getDeviceGroupsWithHttpInfo($device_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->getDeviceGroupsRequest($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1331,6 +1403,12 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->getDeviceGroupsWithHttpInfo($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1344,8 +1422,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1470,11 +1548,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getDeviceGroupsAsyncWithHttpInfo($device_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function getDeviceGroupsAsyncWithHttpInfo($device_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\GroupList';
         $request = $this->getDeviceGroupsRequest($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1491,9 +1568,20 @@ class DeviceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->getDeviceGroupsAsyncWithHttpInfo($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1730,8 +1818,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\DeviceList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listDeviceGrantsWithHttpInfo($device_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listDeviceGrantsWithHttpInfo($device_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listDeviceGrantsRequest($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1739,6 +1829,12 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listDeviceGrantsWithHttpInfo($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1752,8 +1848,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1878,11 +1974,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listDeviceGrantsAsyncWithHttpInfo($device_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listDeviceGrantsAsyncWithHttpInfo($device_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\DeviceList';
         $request = $this->listDeviceGrantsRequest($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1899,9 +1994,20 @@ class DeviceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listDeviceGrantsAsyncWithHttpInfo($device_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2136,8 +2242,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\DeviceList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listDevicesWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listDevicesWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listDevicesRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -2145,6 +2253,12 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listDevicesWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2158,8 +2272,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2282,11 +2396,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listDevicesAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listDevicesAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\DeviceList';
         $request = $this->listDevicesRequest($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -2303,9 +2416,20 @@ class DeviceApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listDevicesAsyncWithHttpInfo($filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2518,8 +2642,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function patchDeviceWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $device = null)
+    public function patchDeviceWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $device = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->patchDeviceRequest($device_id, $avalara_version, $x_correlation_id, $if_match, $device);
 
         try {
@@ -2527,6 +2653,11 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->patchDeviceWithHttpInfo($device_id, $avalara_version, $x_correlation_id, $if_match, $device, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2540,8 +2671,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2612,20 +2743,30 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function patchDeviceAsyncWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $device = null)
+    public function patchDeviceAsyncWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $device = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->patchDeviceRequest($device_id, $avalara_version, $x_correlation_id, $if_match, $device);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($device_id, $avalara_version, $x_correlation_id, $if_match, $device, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->patchDeviceAsyncWithHttpInfo($device_id, $avalara_version, $x_correlation_id, $if_match, $device, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2791,8 +2932,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function removeGrantFromDeviceWithHttpInfo($device_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeGrantFromDeviceWithHttpInfo($device_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->removeGrantFromDeviceRequest($device_id, $grant_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -2800,6 +2943,11 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->removeGrantFromDeviceWithHttpInfo($device_id, $grant_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2813,8 +2961,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2883,20 +3031,30 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function removeGrantFromDeviceAsyncWithHttpInfo($device_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeGrantFromDeviceAsyncWithHttpInfo($device_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->removeGrantFromDeviceRequest($device_id, $grant_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($device_id, $grant_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->removeGrantFromDeviceAsyncWithHttpInfo($device_id, $grant_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -3067,8 +3225,10 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function replaceDeviceWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $device = null)
+    public function replaceDeviceWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $device = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->replaceDeviceRequest($device_id, $avalara_version, $x_correlation_id, $if_match, $device);
 
         try {
@@ -3076,6 +3236,11 @@ class DeviceApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->replaceDeviceWithHttpInfo($device_id, $avalara_version, $x_correlation_id, $if_match, $device, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -3089,8 +3254,8 @@ class DeviceApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -3161,20 +3326,30 @@ class DeviceApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function replaceDeviceAsyncWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $device = null)
+    public function replaceDeviceAsyncWithHttpInfo($device_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $device = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->replaceDeviceRequest($device_id, $avalara_version, $x_correlation_id, $if_match, $device);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($device_id, $avalara_version, $x_correlation_id, $if_match, $device, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->replaceDeviceAsyncWithHttpInfo($device_id, $avalara_version, $x_correlation_id, $if_match, $device, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',

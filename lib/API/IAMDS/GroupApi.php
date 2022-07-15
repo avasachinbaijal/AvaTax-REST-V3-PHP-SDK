@@ -148,8 +148,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function addDeviceToGroupWithHttpInfo($group_id, $device_id, $avalara_version = null, $x_correlation_id = null)
+    public function addDeviceToGroupWithHttpInfo($group_id, $device_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->addDeviceToGroupRequest($group_id, $device_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -157,6 +159,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->addDeviceToGroupWithHttpInfo($group_id, $device_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -170,8 +177,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -240,20 +247,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function addDeviceToGroupAsyncWithHttpInfo($group_id, $device_id, $avalara_version = null, $x_correlation_id = null)
+    public function addDeviceToGroupAsyncWithHttpInfo($group_id, $device_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->addDeviceToGroupRequest($group_id, $device_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $device_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->addDeviceToGroupAsyncWithHttpInfo($group_id, $device_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -422,8 +439,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function addGrantToGroupWithHttpInfo($group_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function addGrantToGroupWithHttpInfo($group_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->addGrantToGroupRequest($group_id, $grant_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -431,6 +450,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->addGrantToGroupWithHttpInfo($group_id, $grant_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -444,8 +468,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -514,20 +538,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function addGrantToGroupAsyncWithHttpInfo($group_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function addGrantToGroupAsyncWithHttpInfo($group_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->addGrantToGroupRequest($group_id, $grant_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $grant_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->addGrantToGroupAsyncWithHttpInfo($group_id, $grant_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -696,8 +730,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function addUserToGroupWithHttpInfo($group_id, $user_id, $avalara_version = null, $x_correlation_id = null)
+    public function addUserToGroupWithHttpInfo($group_id, $user_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->addUserToGroupRequest($group_id, $user_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -705,6 +741,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->addUserToGroupWithHttpInfo($group_id, $user_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -718,8 +759,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -788,20 +829,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function addUserToGroupAsyncWithHttpInfo($group_id, $user_id, $avalara_version = null, $x_correlation_id = null)
+    public function addUserToGroupAsyncWithHttpInfo($group_id, $user_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->addUserToGroupRequest($group_id, $user_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $user_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->addUserToGroupAsyncWithHttpInfo($group_id, $user_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -969,8 +1020,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\Group|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createGroupWithHttpInfo($avalara_version = null, $x_correlation_id = null, $group = null)
+    public function createGroupWithHttpInfo($avalara_version = null, $x_correlation_id = null, $group = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->createGroupRequest($avalara_version, $x_correlation_id, $group);
 
         try {
@@ -978,6 +1031,12 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->createGroupWithHttpInfo($avalara_version, $x_correlation_id, $group, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -991,8 +1050,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1105,11 +1164,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createGroupAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $group = null)
+    public function createGroupAsyncWithHttpInfo($avalara_version = null, $x_correlation_id = null, $group = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\Group';
         $request = $this->createGroupRequest($avalara_version, $x_correlation_id, $group);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1126,9 +1184,20 @@ class GroupApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($avalara_version, $x_correlation_id, $group, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->createGroupAsyncWithHttpInfo($avalara_version, $x_correlation_id, $group, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1274,8 +1343,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteGroupWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deleteGroupWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->deleteGroupRequest($group_id, $avalara_version, $x_correlation_id, $if_match);
 
         try {
@@ -1283,6 +1354,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->deleteGroupWithHttpInfo($group_id, $avalara_version, $x_correlation_id, $if_match, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1296,8 +1372,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1366,20 +1442,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteGroupAsyncWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null)
+    public function deleteGroupAsyncWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->deleteGroupRequest($group_id, $avalara_version, $x_correlation_id, $if_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $avalara_version, $x_correlation_id, $if_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->deleteGroupAsyncWithHttpInfo($group_id, $avalara_version, $x_correlation_id, $if_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1539,8 +1625,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\Group|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function getGroupWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getGroupWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->getGroupRequest($group_id, $avalara_version, $x_correlation_id, $if_none_match);
 
         try {
@@ -1548,6 +1636,12 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->getGroupWithHttpInfo($group_id, $avalara_version, $x_correlation_id, $if_none_match, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1561,8 +1655,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -1677,11 +1771,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function getGroupAsyncWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null)
+    public function getGroupAsyncWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_none_match = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\Group';
         $request = $this->getGroupRequest($group_id, $avalara_version, $x_correlation_id, $if_none_match);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -1698,9 +1791,20 @@ class GroupApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $avalara_version, $x_correlation_id, $if_none_match, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->getGroupAsyncWithHttpInfo($group_id, $avalara_version, $x_correlation_id, $if_none_match, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -1870,8 +1974,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\DeviceList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listGroupDevicesWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listGroupDevicesWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listGroupDevicesRequest($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -1879,6 +1985,12 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listGroupDevicesWithHttpInfo($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -1892,8 +2004,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2018,11 +2130,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listGroupDevicesAsyncWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listGroupDevicesAsyncWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\DeviceList';
         $request = $this->listGroupDevicesRequest($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -2039,9 +2150,20 @@ class GroupApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listGroupDevicesAsyncWithHttpInfo($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2278,8 +2400,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\GrantList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listGroupGrantsWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listGroupGrantsWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listGroupGrantsRequest($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -2287,6 +2411,12 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listGroupGrantsWithHttpInfo($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2300,8 +2430,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2426,11 +2556,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listGroupGrantsAsyncWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listGroupGrantsAsyncWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\GrantList';
         $request = $this->listGroupGrantsRequest($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -2447,9 +2576,20 @@ class GroupApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listGroupGrantsAsyncWithHttpInfo($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -2686,8 +2826,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\UserList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listGroupUsersWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listGroupUsersWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listGroupUsersRequest($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
 
         try {
@@ -2695,6 +2837,12 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listGroupUsersWithHttpInfo($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -2708,8 +2856,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -2834,11 +2982,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listGroupUsersAsyncWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null)
+    public function listGroupUsersAsyncWithHttpInfo($group_id, $filter = null, $top = null, $skip = null, $order_by = null, $count = null, $count_only = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\UserList';
         $request = $this->listGroupUsersRequest($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -2855,9 +3002,20 @@ class GroupApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listGroupUsersAsyncWithHttpInfo($group_id, $filter, $top, $skip, $order_by, $count, $count_only, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -3092,8 +3250,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\IAMDS\GroupList|\Avalara\SDK\Model\IAMDS\VersionError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listGroupsWithHttpInfo($filter = null, $top = null, $skip = null, $count = null, $count_only = null, $order_by = null, $avalara_version = null, $x_correlation_id = null)
+    public function listGroupsWithHttpInfo($filter = null, $top = null, $skip = null, $count = null, $count_only = null, $order_by = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->listGroupsRequest($filter, $top, $skip, $count, $count_only, $order_by, $avalara_version, $x_correlation_id);
 
         try {
@@ -3101,6 +3261,12 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->listGroupsWithHttpInfo($filter, $top, $skip, $count, $count_only, $order_by, $avalara_version, $x_correlation_id, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -3114,8 +3280,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -3238,11 +3404,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listGroupsAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $count = null, $count_only = null, $order_by = null, $avalara_version = null, $x_correlation_id = null)
+    public function listGroupsAsyncWithHttpInfo($filter = null, $top = null, $skip = null, $count = null, $count_only = null, $order_by = null, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\IAMDS\GroupList';
         $request = $this->listGroupsRequest($filter, $top, $skip, $count, $count_only, $order_by, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -3259,9 +3424,20 @@ class GroupApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($filter, $top, $skip, $count, $count_only, $order_by, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->listGroupsAsyncWithHttpInfo($filter, $top, $skip, $count, $count_only, $order_by, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -3474,8 +3650,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function patchGroupWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $group = null)
+    public function patchGroupWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $group = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->patchGroupRequest($group_id, $avalara_version, $x_correlation_id, $if_match, $group);
 
         try {
@@ -3483,6 +3661,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->patchGroupWithHttpInfo($group_id, $avalara_version, $x_correlation_id, $if_match, $group, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -3496,8 +3679,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -3568,20 +3751,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function patchGroupAsyncWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $group = null)
+    public function patchGroupAsyncWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $group = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->patchGroupRequest($group_id, $avalara_version, $x_correlation_id, $if_match, $group);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $avalara_version, $x_correlation_id, $if_match, $group, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->patchGroupAsyncWithHttpInfo($group_id, $avalara_version, $x_correlation_id, $if_match, $group, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -3747,8 +3940,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function removeDeviceFromGroupWithHttpInfo($group_id, $device_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeDeviceFromGroupWithHttpInfo($group_id, $device_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->removeDeviceFromGroupRequest($group_id, $device_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -3756,6 +3951,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->removeDeviceFromGroupWithHttpInfo($group_id, $device_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -3769,8 +3969,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -3839,20 +4039,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function removeDeviceFromGroupAsyncWithHttpInfo($group_id, $device_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeDeviceFromGroupAsyncWithHttpInfo($group_id, $device_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->removeDeviceFromGroupRequest($group_id, $device_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $device_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->removeDeviceFromGroupAsyncWithHttpInfo($group_id, $device_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -4021,8 +4231,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function removeGrantFromGroupWithHttpInfo($group_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeGrantFromGroupWithHttpInfo($group_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->removeGrantFromGroupRequest($group_id, $grant_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -4030,6 +4242,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->removeGrantFromGroupWithHttpInfo($group_id, $grant_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -4043,8 +4260,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -4113,20 +4330,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function removeGrantFromGroupAsyncWithHttpInfo($group_id, $grant_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeGrantFromGroupAsyncWithHttpInfo($group_id, $grant_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->removeGrantFromGroupRequest($group_id, $grant_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $grant_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->removeGrantFromGroupAsyncWithHttpInfo($group_id, $grant_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -4295,8 +4522,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function removeUserFromGroupWithHttpInfo($group_id, $user_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeUserFromGroupWithHttpInfo($group_id, $user_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->removeUserFromGroupRequest($group_id, $user_id, $avalara_version, $x_correlation_id);
 
         try {
@@ -4304,6 +4533,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->removeUserFromGroupWithHttpInfo($group_id, $user_id, $avalara_version, $x_correlation_id, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -4317,8 +4551,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -4387,20 +4621,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function removeUserFromGroupAsyncWithHttpInfo($group_id, $user_id, $avalara_version = null, $x_correlation_id = null)
+    public function removeUserFromGroupAsyncWithHttpInfo($group_id, $user_id, $avalara_version = null, $x_correlation_id = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->removeUserFromGroupRequest($group_id, $user_id, $avalara_version, $x_correlation_id);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $user_id, $avalara_version, $x_correlation_id, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->removeUserFromGroupAsyncWithHttpInfo($group_id, $user_id, $avalara_version, $x_correlation_id, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',
@@ -4571,8 +4815,10 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return array of null, HTTP status code, HTTP response headers (array of strings)
      */
-    public function replaceGroupWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $group = null)
+    public function replaceGroupWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $group = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "iam avatax_api";
         $request = $this->replaceGroupRequest($group_id, $avalara_version, $x_correlation_id, $if_match, $group);
 
         try {
@@ -4580,6 +4826,11 @@ class GroupApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    $this->replaceGroupWithHttpInfo($group_id, $avalara_version, $x_correlation_id, $if_match, $group, true);
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -4593,8 +4844,8 @@ class GroupApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -4665,20 +4916,30 @@ class GroupApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function replaceGroupAsyncWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $group = null)
+    public function replaceGroupAsyncWithHttpInfo($group_id, $avalara_version = null, $x_correlation_id = null, $if_match = null, $group = null, $isRetry = false)
     {
         $returnType = '';
         $request = $this->replaceGroupRequest($group_id, $avalara_version, $x_correlation_id, $if_match, $group);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
                 function ($response) use ($returnType) {
                     return [null, $response->getStatusCode(), $response->getHeaders()];
                 },
-                function ($exception) {
+                function ($exception) use ($group_id, $avalara_version, $x_correlation_id, $if_match, $group, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "iam avatax_api";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->replaceGroupAsyncWithHttpInfo($group_id, $avalara_version, $x_correlation_id, $if_match, $group, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',

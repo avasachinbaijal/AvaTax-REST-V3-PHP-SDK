@@ -145,8 +145,10 @@ class AgeVerificationApi
      * @throws \InvalidArgumentException
      * @return array of \Avalara\SDK\Model\AgeVerification\AgeVerifyResult, HTTP status code, HTTP response headers (array of strings)
      */
-    public function verifyAgeWithHttpInfo($age_verify_request, $simulated_failure_code = null)
+    public function verifyAgeWithHttpInfo($age_verify_request, $simulated_failure_code = null, $isRetry = false)
     {
+        //OAuth2 Scopes
+        $requiredScopes = "";
         $request = $this->verifyAgeRequest($age_verify_request, $simulated_failure_code);
 
         try {
@@ -154,6 +156,12 @@ class AgeVerificationApi
             try {
                 $response = $this->client->send_sync($request, $options);
             } catch (RequestException $e) {
+                $statusCode = $e->getCode();
+                if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                    $this->client->refreshAuthToken($e->getRequest() ? $e->getRequest()->getHeaders() : null, $requiredScopes);
+                    list($response) = $this->verifyAgeWithHttpInfo($age_verify_request, $simulated_failure_code, true);
+                    return $response;
+                }
                 throw new ApiException(
                     "[{$e->getCode()}] {$e->getMessage()}",
                     (int) $e->getCode(),
@@ -167,8 +175,8 @@ class AgeVerificationApi
                     null,
                     null
                 );
-            }
-
+            }         
+            
             $statusCode = $response->getStatusCode();
 
             if ($statusCode < 200 || $statusCode > 299) {
@@ -259,11 +267,10 @@ class AgeVerificationApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function verifyAgeAsyncWithHttpInfo($age_verify_request, $simulated_failure_code = null)
+    public function verifyAgeAsyncWithHttpInfo($age_verify_request, $simulated_failure_code = null, $isRetry = false)
     {
         $returnType = '\Avalara\SDK\Model\AgeVerification\AgeVerifyResult';
         $request = $this->verifyAgeRequest($age_verify_request, $simulated_failure_code);
-
         return $this->client
             ->send_async($request, $this->createHttpClientOption())
             ->then(
@@ -280,9 +287,20 @@ class AgeVerificationApi
                         $response->getHeaders()
                     ];
                 },
-                function ($exception) {
+                function ($exception) use ($age_verify_request, $simulated_failure_code, $isRetry, $request) {
+                    //OAuth2 Scopes
+                    $requiredScopes = "";
                     $response = $exception->getResponse();
                     $statusCode = $response->getStatusCode();
+                    if (($statusCode == 401 || $statusCode == 403) && !$isRetry) {
+                        $this->client->refreshAuthToken($request->getHeaders(), $requiredScopes);
+                        return $this->verifyAgeAsyncWithHttpInfo($age_verify_request, $simulated_failure_code, true)
+                            ->then(
+                                function ($response) {
+                                    return $response[0];
+                                }
+                            );
+                    }
                     throw new ApiException(
                         sprintf(
                             '[%d] Error connecting to the API (%s)',

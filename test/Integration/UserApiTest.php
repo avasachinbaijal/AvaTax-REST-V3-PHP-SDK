@@ -9,6 +9,7 @@ use \Avalara\SDK\ApiClient;
 use \Avalara\SDK\API\IAMDS\UserApi;
 use \Avalara\SDK\Model\IAMDS\User;
 use PHPUnit\Framework\TestCase;
+use \GuzzleHttp\Promise\queue;
 
 class UserApiIntegrationTest extends TestCase
 {
@@ -39,9 +40,16 @@ class UserApiIntegrationTest extends TestCase
         $user_request = new \Avalara\SDK\Model\IAMDS\User(); 
 
         try {
-            $result=$apiInstance->createUser(null, null, $user_request);
-            $this->assertNotNull($result);
-            print_r($result);
+            $result=$apiInstance->createUserAsync(null, null, $user_request);
+            $result->then(
+                function($response) {
+                    $this->assertNotNull($response);
+                    print_r($response);
+                }
+            );
+            //  Tick the promise queue to trigger the callback
+            $result->wait();
+            \GuzzleHttp\Promise\queue();
         }
         catch (Exception $e) {
             echo 'Exception : ', $e->getMessage(), PHP_EOL;

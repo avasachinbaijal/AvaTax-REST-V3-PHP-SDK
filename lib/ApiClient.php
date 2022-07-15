@@ -105,7 +105,7 @@ class ApiClient
             $this->config->setHost('https://sandbox-rest.avatax.com');
         }
         elseif(strtolower($this->environment)=="qa"){
-            $this->config->setHost("https://qa-rest.avatax.com");
+            $this->config->setHost("https://sandbox-rest.avatax.com");
         }
         elseif(strtolower($this->environment)=="production"){
             $this->config->setHost("https://rest.avatax.com");
@@ -256,6 +256,16 @@ class ApiClient
         $response = $this->send_sync($request, []);
         $content = (string) $response->getBody();
         return json_decode($content);
+    }
+
+    public function refreshAuthToken($headers, $requiredScopes) {
+        $authHeader = $headers['Authorization'][0];
+        $authValues = explode(' ', $authHeader);
+        if (!is_null($authValues) && count($authValues) == 2 && 
+            !is_null($this->config->getClientId()) && !is_null($this->config->getClientSecret())) {
+            
+            $this->updateOAuthAccessToken($requiredScopes, $authValues[1]);
+        }
     }
 
     /**
