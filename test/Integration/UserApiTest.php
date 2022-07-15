@@ -10,6 +10,7 @@ use \Avalara\SDK\API\IAMDS\UserApi;
 use \Avalara\SDK\Model\IAMDS\User;
 use PHPUnit\Framework\TestCase;
 use \GuzzleHttp\Promise\queue;
+use Dotenv\Dotenv;
 
 class UserApiIntegrationTest extends TestCase
 {
@@ -17,7 +18,8 @@ class UserApiIntegrationTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        (new DotEnv(getcwd() . '/.env'))->load();
+        $dotenv = Dotenv::createImmutable(getcwd());
+        $dotenv->load();
         $config = new \Avalara\SDK\Configuration();
         $config->setClientId(getenv('CLIENT_ID'));
         $config->setClientSecret(getenv('CLIENT_SECRET'));
