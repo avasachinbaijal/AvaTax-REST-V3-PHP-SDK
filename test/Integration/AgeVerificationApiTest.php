@@ -3,7 +3,7 @@
 namespace Avalara\SDK\Test\Integration;
 // Include the AvaTaxClient library
 // require_once(__DIR__ . '/vendor/autoload.php');
-use \Avalara\SDK\Test;
+use \Avalara\SDK\Test\DotEnv;
 use \Avalara\SDK\Configuration;
 use \Avalara\SDK\ApiClient;
 use \Avalara\SDK\API\AgeVerification\AgeVerificationApi;
