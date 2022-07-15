@@ -18,7 +18,7 @@ class UserApiIntegrationTest extends TestCase
 
     public static function setUpBeforeClass(): void
     {
-        (new \Avalara\SDK\Test\DotEnv(getcwd() . '/.env'))->load();
+        (new DotEnv(getcwd() . '/.env'))->load();
         $config = new \Avalara\SDK\Configuration();
         $config->setClientId(getenv('CLIENT_ID'));
         $config->setClientSecret(getenv('CLIENT_SECRET'));

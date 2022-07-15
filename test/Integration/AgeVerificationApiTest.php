@@ -15,7 +15,7 @@ class AgeVerificationApiIntegrationTest extends TestCase
 {
     public function testVerifyShipment()
     {
-        (new \Avalara\SDK\Test\DotEnv(getcwd() . '/.env'))->load();
+        (new DotEnv(getcwd() . '/.env'))->load();
         $config = new \Avalara\SDK\Configuration();
         $config->username=getenv('AUTH_USERNAME');
         $config->password=getenv('AUTH_PASSWORD');
